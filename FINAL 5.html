@@ -1,0 +1,2108 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>تولیدکننده ووچر/تیکت پرواز - نسخه پیشرفته</title>
+  <!-- کتابخانه‌های مورد نیاز -->
+  <link rel="stylesheet" href="https://unpkg.com/persian-datepicker@1.2.0/dist/css/persian-datepicker.min.css">
+  <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet">
+  <style>
+    @font-face {
+      font-family: 'Vazir';
+      src: url('https://cdn.jsdelivr.net/gh/rastikerdar/vazir-font@v30.1.0/dist/Vazir-Regular.woff2') format('woff2');
+      font-weight: 400;
+      font-style: normal;
+    }
+    @font-face {
+      font-family: 'Vazir';
+      src: url('https://cdn.jsdelivr.net/gh/rastikerdar/vazir-font@v30.1.0/dist/Vazir-Bold.woff2') format('woff2');
+      font-weight: 700;
+      font-style: normal;
+    }
+    :root {
+      --card-bg: #ffffff;
+      --muted: #6b7280;
+      --accent: #0b6b4f;
+      --border-color: #e2e8f0;
+      --primary: #1e3a8a;
+      --secondary: #f1f5f9;
+      --text-dark: #1f2937;
+      --shadow: 0 4px 12px rgba(0,0,0,0.08);
+    }
+    body {
+      font-family: 'Vazir', Tahoma, Arial, sans-serif;
+      background: #f1f5f9;
+      padding: 20px;
+      color: var(--text-dark);
+      line-height: 1.6;
+    }
+    .container { max-width: 1200px; margin: 0 auto; }
+    h2, h4 { color: var(--primary); margin-bottom: 16px; font-weight: 700; }
+    .controls { display: flex; gap: 16px; flex-wrap: wrap; margin-bottom: 20px; }
+    .panel { background: var(--card-bg); border-radius: 12px; box-shadow: var(--shadow); padding: 20px; flex: 1; min-width: 320px; }
+    label { display: block; font-size: 14px; margin-bottom: 8px; color: var(--muted); font-weight: 500; }
+    input, select, textarea, button {
+      width: 100%; padding: 10px; border-radius: 8px; border: 1px solid var(--border-color);
+      font-size: 14px; box-sizing: border-box; transition: border-color 0.2s;
+    }
+    input:focus, select:focus, textarea:focus { border-color: var(--primary); outline: none; }
+    input[type="datetime-local"] { padding: 10px; }
+    select { padding-right: 30px; }
+    .row { display: flex; gap: 12px; }
+    .row > * { flex: 1; }
+    .voucher-wrap { background: #ffffff; padding: 20px; border-radius: 12px; border: 2px solid var(--border-color); margin: 10px 0; box-shadow: var(--shadow); }
+    .voucher {
+      max-width: 860px; margin: 0 auto; direction: rtl; padding: 24px; font-size: 14px;
+      color: var(--text-dark); background: #ffffff; border-radius: 12px; border: 3px solid var(--primary); box-shadow: var(--shadow);
+    }
+    .voucher .head { display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 16px; padding: 16px; border-bottom: 2px solid var(--border-color); margin-bottom: 20px; background: linear-gradient(to bottom, #f8fafc, #ffffff); }
+    .airline { display: flex; align-items: center; gap: 16px; }
+    .airline img { width: 120px; height: 60px; object-fit: contain; border-radius: 8px; background: #fff; padding: 8px; border: 1px solid var(--border-color); box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+    .airline-info { font-size: 13px; color: var(--muted); margin-top: 4px; }
+    .flight-info { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 20px; padding: 16px; border: 2px solid var(--border-color); border-radius: 10px; background: var(--secondary); }
+    .field { display: grid; grid-template-columns: 150px 1fr; align-items: center; padding: 12px 0; border-bottom: 1px dashed var(--border-color); }
+    .field:last-child { border-bottom: none; }
+    .label { font-size: 13px; color: var(--muted); font-weight: 500; }
+    .value { font-size: 14px; font-weight: 700; color: var(--text-dark); text-align: left; }
+    .qr { width: 130px; height: 130px; background: #fff; padding: 8px; border-radius: 10px; border: 2px solid var(--border-color); box-shadow: 0 2px 6px rgba(0,0,0,0.1); margin-top: 16px; }
+    .baggage-section { margin-top: 20px; padding: 16px; border: 2px solid var(--border-color); border-radius: 10px; background: #fff; }
+    .baggage-section .baggage-row { 
+      display: grid; 
+      grid-template-columns: repeat(4, 1fr); 
+      gap: 12px; 
+      margin-bottom: 12px;
+    }
+    .baggage-section .baggage-field { 
+      display: flex; 
+      flex-direction: column; 
+      text-align: center;
+      padding: 8px;
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      background: #f8fafc;
+    }
+    .baggage-section .baggage-label { 
+      font-size: 12px; 
+      color: var(--muted); 
+      margin-bottom: 4px;
+    }
+    .baggage-section .baggage-value { 
+      font-size: 14px; 
+      font-weight: 700; 
+      color: var(--text-dark);
+    }
+    .lower-section { display: flex; gap: 16px; align-items: flex-start; margin-top: 20px; }
+    .actions { display: flex; gap: 10px; margin-top: 16px; }
+    .small { font-size: 13px; padding: 10px; background: var(--primary); color: #fff; border: none; border-radius: 8px; cursor: pointer; transition: background 0.2s; }
+    .small:hover { background: #1e40af; }
+    .logo-dropdown-container { margin-top: 8px; }
+    .logo-dropdown-container select { font-size: 14px; padding: 10px; }
+    .rtl { direction: rtl; text-align: right; }
+    .ltr { direction: ltr; text-align: left; }
+    footer.voucher-footer { margin-top: 20px; padding-top: 16px; border-top: 2px solid var(--border-color); }
+    .issuer { display: flex; gap: 12px; align-items: center; }
+    .issuer img { width: 100px; height: 50px; object-fit: contain; border-radius: 8px; background: #fff; padding: 8px; border: 1px solid var(--border-color); box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+    .notes-section { margin: 20px 0; padding: 16px; border: 2px solid var(--border-color); border-radius: 10px; background: #fff; }
+    .hidden { display: none; }
+    .select2-container--default .select2-selection--single { border: 1px solid var(--border-color); border-radius: 8px; padding: 5px; font-family: 'Vazir', Tahoma, Arial, sans-serif; }
+    .select2-container--default .select2-selection--single .select2-selection__rendered { display: flex; align-items: center; }
+    .select2-container--default .select2-selection__arrow { height: 100%; top: 0; }
+    .select2-results__option { display: flex; align-items: center; padding: 8px; }
+    .select2-results__option img { width: 30px; height: 20px; object-fit: contain; margin-left: 8px; }
+    .select2-option-info { display: flex; flex-direction: column; flex-grow: 1; }
+    .select2-option-actions { display: flex; gap: 8px; margin-right: auto; order: 2; }
+    .action-btn { padding: 4px 8px; font-size: 12px; border-radius: 4px; cursor: pointer; color: #fff; }
+    .delete-btn { background: #dc2626; }
+    .edit-btn { background: #1e3a8a; }
+    .action-btn:hover { opacity: 0.9; }
+    .logo-preview { margin-top: 8px; }
+    .logo-preview img { width: 80px; height: 40px; object-fit: contain; border: 1px solid var(--border-color); border-radius: 4px; padding: 4px; }
+    
+    /* استایل‌های جدید برای پروازهای میانی و مسافران */
+    .flight-segment { border: 1px solid var(--border-color); border-radius: 8px; padding: 12px; margin-bottom: 12px; background: #f8fafc; }
+    .flight-segment-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+    .flight-segment-title { font-weight: 700; color: var(--primary); }
+    .remove-flight { background: #dc2626; color: white; border: none; border-radius: 4px; padding: 4px 8px; cursor: pointer; font-size: 12px; }
+    .passenger-section { border: 1px solid var(--border-color); border-radius: 8px; padding: 12px; margin-bottom: 12px; background: #f8fafc; }
+    .passenger-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+    .passenger-title { font-weight: 700; color: var(--primary); }
+    .remove-passenger { background: #dc2626; color: white; border: none; border-radius: 4px; padding: 4px 8px; cursor: pointer; font-size: 12px; }
+    .add-buttons { display: flex; gap: 8px; margin-top: 12px; }
+    .flight-segment-content { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    
+    /* استایل‌های جدید برای تاریخ‌ها */
+    .date-input-container { margin-bottom: 8px; }
+    .date-input-container .date-input { margin-bottom: 4px; }
+    
+    @media (max-width: 880px) {
+      .controls, .flight-info, .lower-section { flex-direction: column; grid-template-columns: 1fr; }
+      .voucher { padding: 16px; }
+      .head { grid-template-columns: 1fr; text-align: center; }
+      .field { grid-template-columns: 120px 1fr; }
+      .flight-segment-content { grid-template-columns: 1fr; }
+      .baggage-section .baggage-row { grid-template-columns: 1fr 1fr; }
+    }
+    @media print {
+      .voucher-wrap { border: none; box-shadow: none; padding: 0; }
+      .voucher { border: none; box-shadow: none; max-width: 100%; }
+      .qr { display: block; }
+    }
+    .pwt-datepicker { font-family: 'Vazir', Tahoma, Arial, sans-serif !important; direction: rtl; }
+    .pwt-btn { font-size: 12px !important; }
+    .pwt-grid td { font-size: 13px !important; }
+    .pwt-time select { font-size: 13px !important; }
+    * { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+  </style>
+  <!-- اسکریپت‌ها -->
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://unpkg.com/persian-date@1.1.0/dist/persian-date.min.js"></script>
+  <script src="https://unpkg.com/persian-datepicker@1.2.0/dist/js/persian-datepicker.min.js"></script>
+</head>
+<body>
+<div class="container">
+  <h2>تولیدکننده ووچر / تیکت پرواز — نسخه پیشرفته</h2>
+  <div class="controls">
+    <div class="panel">
+      <h4>انتخاب شرکت هواپیمایی و لوگو</h4>
+      <div class="row">
+        <div><label>نام فارسی شرکت</label><input id="persianName" placeholder="مثال: هواپیمایی زاگرس"></div>
+        <div><label>نام انگلیسی شرکت</label><input id="englishName" placeholder="مثال: Zagros Airlines"></div>
+      </div>
+      <div class="row" style="margin-top:8px">
+        <div><label>کد شرکت</label><input id="airlineCode" placeholder="مثال: ZV"></div>
+        <div>
+          <label>لوگو شرکت (PNG/JPG)</label>
+          <input id="logoFile" type="file" accept="image/*">
+          <div id="logoPreview" class="logo-preview hidden"></div>
+        </div>
+      </div>
+      <div style="display:flex;gap:8px;margin-top:8px">
+        <button id="addLogoBtn" class="small">افزودن شرکت/لوگو</button>
+        <button id="clearLogos" class="small">پاک کردن لوگوها</button>
+      </div>
+      <div class="logo-dropdown-container">
+        <label style="margin-top:8px">انتخاب شرکت هواپیمایی</label>
+        <select id="airlineDropdown">
+          <option value="">انتخاب کنید...</option>
+        </select>
+      </div>
+      <div class="logo-dropdown-container">
+        <label style="margin-top:8px">انتخاب لوگو از ذخیره‌شده‌ها</label>
+        <select id="logoDropdown">
+          <option value="">انتخاب کنید...</option>
+        </select>
+      </div>
+    </div>
+    <div class="panel">
+      <h4>اطلاعات مسافران</h4>
+      <div id="passengersContainer">
+        <!-- مسافر اول به صورت پیش‌فرض -->
+        <div class="passenger-section" data-passenger-index="0">
+          <div class="passenger-header">
+            <div class="passenger-title">مسافر 1</div>
+            <button type="button" class="remove-passenger hidden">حذف مسافر</button>
+          </div>
+          <div class="row">
+            <div><label>نوع مسافر</label>
+              <select class="passenger-type">
+                <option value="ADL">بزرگسال (ADL)</option>
+                <option value="CHD">کودک (CHD)</option>
+                <option value="INF">نوزاد (INF)</option>
+              </select>
+            </div>
+            <div><label>جنسیت</label>
+              <select class="passenger-gender">
+                <option value="MR">آقا</option>
+                <option value="MS">خانم</option>
+              </select>
+            </div>
+          </div>
+          <div class="row" style="margin-top:8px">
+            <div><label>نام</label><input class="passenger-first-name" placeholder="نام"></div>
+            <div><label>نام خانوادگی</label><input class="passenger-last-name" placeholder="نام خانوادگی"></div>
+          </div>
+          <div class="row" style="margin-top:8px">
+            <div><label>شماره بلیت (Ticket No)</label><input class="passenger-ticket-no" placeholder="مثال: 96587412"></div>
+            <div><label>کد مرجع (Reference)</label><input class="passenger-reference" placeholder="قابل وارد کردن یا خالی برای تولید خودکار"></div>
+          </div>
+        </div>
+      </div>
+      <div class="add-buttons">
+        <button id="addPassengerBtn" class="small">افزودن مسافر جدید</button>
+      </div>
+    </div>
+    <div class="panel">
+      <h4>اطلاعات پرواز</h4>
+      <div id="flightsContainer">
+        <!-- پرواز رفت به صورت پیش‌فرض -->
+        <div class="flight-segment" data-flight-index="0" data-flight-type="outbound">
+          <div class="flight-segment-header">
+            <div class="flight-segment-title">پرواز رفت</div>
+            <button type="button" class="remove-flight hidden">حذف پرواز</button>
+          </div>
+          <div class="flight-segment-content">
+            <div>
+              <label>مبدا</label>
+              <select class="flight-from">
+                <option value="">انتخاب یا جستجوی شهر...</option>
+              </select>
+            </div>
+            <div>
+              <label>مقصد</label>
+              <select class="flight-to">
+                <option value="">انتخاب یا جستجوی شهر...</option>
+              </select>
+            </div>
+            <div>
+              <label>تاریخ و زمان پرواز</label>
+              <div class="date-input-container">
+                <input class="flight-datetime" type="datetime-local" placeholder="2025-12-31T14:30">
+                <input class="flight-datetime-persian" type="text" placeholder="1404/08/12 14:30" dir="ltr">
+              </div>
+            </div>
+            <div>
+              <label>شماره پرواز</label>
+              <input class="flight-no" placeholder="مثال: ZV123">
+            </div>
+            <div>
+              <label>کلاس پروازی</label>
+              <select class="flight-class">
+                <option value="">انتخاب یا وارد کردن کلاس دلخواه</option>
+                <option value="Economy">اکونومی (Economy)</option>
+                <option value="Premium Economy">پریمیوم اکونومی (Premium Economy)</option>
+                <option value="Business">بیزینس (Business)</option>
+                <option value="First Class">فرست کلاس (First Class)</option>
+                <option value="Business Class">بیزینس کلاس (Business Class)</option>
+                <option value="Economy Class">اکونومی کلاس (Economy Class)</option>
+                <option value="custom">کلاس دلخواه (Custom Class)</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="add-buttons">
+        <button id="addIntermediateFlightBtn" class="small">افزودن پرواز میانی</button>
+        <button id="addReturnFlightBtn" class="small">افزودن پرواز برگشت</button>
+      </div>
+      
+      <div style="margin-top:16px">
+        <div class="row">
+          <div>
+            <label>نمایش قیمت؟</label>
+            <select id="showPrice"><option value="no">خیر</option><option value="yes">بله</option></select>
+          </div>
+          <div>
+            <label>قیمت (اختیاری)</label>
+            <input id="price" placeholder="مثال: 1500000 IRR">
+          </div>
+        </div>
+        <div class="row" style="margin-top:8px">
+          <div><label>نمایش اطلاعات بار؟</label><select id="showBaggage"><option value="no">خیر</option><option value="yes">بله</option></select></div>
+        </div>
+        <div class="row" style="margin-top:8px">
+          <div><label>تعداد بسته بار مجاز</label><input id="baggageCount" placeholder="مثال: 2"></div>
+          <div><label>وزن مجاز بار (کیلوگرم)</label><input id="baggageWeight" placeholder="مثال: 30"></div>
+        </div>
+        <div class="row" style="margin-top:8px">
+          <div><label>تعداد بسته بار دستی</label><input id="handBaggageCount" placeholder="مثال: 1"></div>
+          <div><label>وزن مجاز بار دستی (کیلوگرم)</label><input id="handBaggageWeight" placeholder="مثال: 7"></div>
+        </div>
+        <div style="margin-top:8px">
+          <label>توضیحات (Notes)</label>
+          <textarea id="notes" rows="3" placeholder="توضیحات اضافی برای ووچر..."></textarea>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="controls">
+    <div class="panel">
+      <h4>تنظیمات عمومی</h4>
+      <div class="row">
+        <div>
+          <label>نوع تقویم</label>
+          <select id="datetimeCalendarType">
+            <option value="gregorian">میلادی</option>
+            <option value="persian">شمسی</option>
+          </select>
+        </div>
+        <div>
+          <label>نمایش تاریخ و ساعت صدور؟</label>
+          <select id="issueDateMode">
+            <option value="none">خیر</option>
+            <option value="auto" selected>خودکار</option>
+            <option value="manual">دستی</option>
+          </select>
+        </div>
+      </div>
+      <div class="row" style="margin-top:8px">
+        <div>
+          <label>نمایش QR Code؟</label>
+          <select id="showQr"><option value="yes">بله</option><option value="no">خیر</option></select>
+        </div>
+        <div>
+          <label>نوع QR کد</label>
+          <select id="qrMode"><option value="ticket">متن کل بلیت</option><option value="ref">کد مرجع</option></select>
+        </div>
+      </div>
+      <div class="row" style="margin-top:8px">
+        <div>
+          <label>زبان ووچر</label>
+          <select id="langSelect"><option value="fa">فارسی + انگلیسی</option><option value="ar">عربی + انگلیسی</option><option value="en">انگلیسی</option></select>
+        </div>
+        <div>
+          <label>فرمت خروجی</label>
+          <select id="formatSelect"><option value="pdf">PDF</option><option value="jpg">JPG</option></select>
+        </div>
+      </div>
+      <div class="actions" style="margin-top:12px">
+        <button id="generateBtn" class="small">نمایش ووچر</button>
+        <button id="downloadBtn" class="small">دانلود</button>
+        <button id="printBtn" class="small">چاپ</button>
+        <button id="resetBtn" class="small">تنظیم مجدد</button>
+      </div>
+    </div>
+    
+    <div class="panel" style="min-width:400px">
+      <h4>صادرکننده / Issuer</h4>
+      <label>نام صادرکننده</label>
+      <input id="issuerName" placeholder="مثال: آژانس سفر نمونه">
+      <div class="row" style="margin-top:8px">
+        <div><label>تلفن</label><input id="issuerPhone" placeholder="+98 21 12345678"></div>
+        <div><label>ایمیل</label><input id="issuerEmail" placeholder="info@example.com"></div>
+      </div>
+      <div class="row" style="margin-top:8px">
+        <div><label>وب‌سایت</label><input id="issuerWebsite" placeholder="www.example.com"></div>
+        <div>
+          <label>لوگوی صادرکننده</label>
+          <input id="issuerLogoFile" type="file" accept="image/*">
+          <div id="issuerLogoPreview" class="logo-preview hidden"></div>
+        </div>
+      </div>
+      <div style="margin-top:8px">
+        <label>توضیحات صادرکننده</label>
+        <textarea id="issuerNotes" rows="3" placeholder="توضیحات اضافی برای صادرکننده..."></textarea>
+      </div>
+      <div style="margin-top:8px">
+        <label>نمایش اطلاعات صادرکننده؟</label>
+        <select id="showIssuer"><option value="no">خیر</option><option value="yes">بله</option></select>
+      </div>
+    </div>
+  </div>
+  
+  <div class="panel voucher-wrap">
+    <div id="voucherPreview" class="voucher" aria-live="polite"></div>
+  </div>
+</div>
+<script>
+const LOGOS_KEY = 'voucher_logos_v3';
+const FORM_DATA_KEY = 'voucher_form_data';
+const DEFAULT_LOGO = 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="200" height="80"><rect width="100%" height="100%" fill="#f5f8ff"/></svg>';
+const DEFAULT_ISSUER_LOGO = 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="180" height="90"><rect width="100%" height="100%" fill="#fbfbfb"/></svg>';
+const DAYS_FA = ['یک‌شنبه', 'دوشنبه', 'سه‌شنبه', 'چهارشنبه', 'پنج‌شنبه', 'جمعه', 'شنبه'];
+const DAYS_EN = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+
+// داده‌های فرودگاه‌ها - بروزرسانی کامل شده
+const airports = [
+  // فرودگاه‌های ایران
+  { code: 'IKA', nameFa: 'تهران - امام خمینی (IKA)', nameEn: 'Tehran - Imam Khomeini (IKA)' },
+  { code: 'THR', nameFa: 'تهران - مهرآباد (THR)', nameEn: 'Tehran - Mehrabad (THR)' },
+  { code: 'MHD', nameFa: 'مشهد (MHD)', nameEn: 'Mashhad (MHD)' },
+  { code: 'SYZ', nameFa: 'شیراز (SYZ)', nameEn: 'Shiraz (SYZ)' },
+  { code: 'TBZ', nameFa: 'تبریز (TBZ)', nameEn: 'Tabriz (TBZ)' },
+  { code: 'AWZ', nameFa: 'اهواز (AWZ)', nameEn: 'Ahwaz (AWZ)' },
+  { code: 'ABD', nameFa: 'آبادان (ABD)', nameEn: 'Abadan (ABD)' },
+  { code: 'KSH', nameFa: 'کرمانشاه (KSH)', nameEn: 'Kermanshah (KSH)' },
+  { code: 'IFN', nameFa: 'اصفهان (IFN)', nameEn: 'Isfahan (IFN)' },
+  { code: 'RAS', nameFa: 'رشت (RAS)', nameEn: 'Rasht (RAS)' },
+  { code: 'OMH', nameFa: 'ارومیه (OMH)', nameEn: 'Urmia (OMH)' },
+  { code: 'KIH', nameFa: 'کیش (KIH)', nameEn: 'Kish (KIH)' },
+  { code: 'GSM', nameFa: 'قشم (GSM)', nameEn: 'Qeshm (GSM)' },
+  { code: 'BND', nameFa: 'بندرعباس (BND)', nameEn: 'Bandar Abbas (BND)' },
+  { code: 'ZBR', nameFa: 'چابهار (ZBR)', nameEn: 'Chabahar (ZBR)' },
+  { code: 'XBJ', nameFa: 'بیرجند (XBJ)', nameEn: 'Birjand (XBJ)' },
+  { code: 'SRY', nameFa: 'ساری (SRY)', nameEn: 'Sari (SRY)' },
+  { code: 'NSH', nameFa: 'نوشهر (NSH)', nameEn: 'Noshahr (NSH)' },
+  { code: 'ACZ', nameFa: 'زابل (ACZ)', nameEn: 'Zabol (ACZ)' },
+  { code: 'AZD', nameFa: 'یزد (AZD)', nameEn: 'Yazd (AZD)' },
+  { code: 'KER', nameFa: 'کرمان (KER)', nameEn: 'Kerman (KER)' },
+  { code: 'JWN', nameFa: 'زنجان (JWN)', nameEn: 'Zanjan (JWN)' },
+  { code: 'ADU', nameFa: 'اردبیل (ADU)', nameEn: 'Ardabil (ADU)' },
+  { code: 'PFQ', nameFa: 'پارس آباد (PFQ)', nameEn: 'Parsabad (PFQ)' },
+  { code: 'KHK', nameFa: 'خارک (KHK)', nameEn: 'Khark (KHK)' },
+  { code: 'LVP', nameFa: 'لاوان (LVP)', nameEn: 'Lavan (LVP)' },
+  { code: 'KHA', nameFa: 'خانقین (KHA)', nameEn: 'Khanagin (KHA)' },
+  { code: 'JYR', nameFa: 'جیرفت (JYR)', nameEn: 'Jiroft (JYR)' },
+  { code: 'BXR', nameFa: 'بم (BXR)', nameEn: 'Bam (BXR)' },
+  { code: 'RJN', nameFa: 'رفسنجان (RJN)', nameEn: 'Rafsanjan (RJN)' },
+  { code: 'YES', nameFa: 'یاسوج (YES)', nameEn: 'Yasuj (YES)' },
+  { code: 'IAQ', nameFa: 'بهرگان (IAQ)', nameEn: 'Bahregan (IAQ)' },
+  { code: 'SDG', nameFa: 'سنندج (SDG)', nameEn: 'Sanandaj (SDG)' },
+  { code: 'HDM', nameFa: 'همدان (HDM)', nameEn: 'Hamadan (HDM)' },
+  { code: 'IIL', nameFa: 'ایلام (IIL)', nameEn: 'Ilam (IIL)' },
+  { code: 'AFZ', nameFa: 'سبزوار (AFZ)', nameEn: 'Sabzevar (AFZ)' },
+  { code: 'TCX', nameFa: 'طبس (TCX)', nameEn: 'Tabas (TCX)' },
+  { code: 'KHY', nameFa: 'خوی (KHY)', nameEn: 'Khoy (KHY)' },
+  { code: 'KLM', nameFa: 'کلاله (KLM)', nameEn: 'Kalaleh (KLM)' },
+  { code: 'GBT', nameFa: 'گرگان (GBT)', nameEn: 'Gorgan (GBT)' },
+  { code: 'CQD', nameFa: 'شهرکرد (CQD)', nameEn: 'Shahrekord (CQD)' },
+  { code: 'LRR', nameFa: 'لارستان (LRR)', nameEn: 'Lar (LRR)' },
+  { code: 'KNR', nameFa: 'جناح (KNR)', nameEn: 'Jannat (KNR)' },
+  { code: 'BDH', nameFa: 'بندرلنگه (BDH)', nameEn: 'Bandar Lengeh (BDH)' },
+  { code: 'PGU', nameFa: 'عسلویه (PGU)', nameEn: 'Asalouyeh (PGU)' },
+  { code: 'MRX', nameFa: 'ماهشهر (MRX)', nameEn: 'Mahshahr (MRX)' },
+  { code: 'DEF', nameFa: 'دزفول (DEF)', nameEn: 'Dezful (DEF)' },
+  { code: 'AJK', nameFa: 'اراک (AJK)', nameEn: 'Arak (AJK)' },
+  { code: 'BSM', nameFa: 'بوشهر (BSM)', nameEn: 'Bushehr (BSM)' },
+  { code: 'QMJ', nameFa: 'شهرکرد - قهجاور (QMJ)', nameEn: 'Shahrekord - Qahjavar (QMJ)' },
+  { code: 'ACP', nameFa: 'مراغه (ACP)', nameEn: 'Maragheh (ACP)' },
+  { code: 'FAZ', nameFa: 'فارس (FAZ)', nameEn: 'Fars (FAZ)' },
+  { code: 'JAR', nameFa: 'جهرم (JAR)', nameEn: 'Jahrom (JAR)' },
+  { code: 'KHA', nameFa: 'خرم‌آباد (KHA)', nameEn: 'Khorramabad (KHA)' },
+  { code: 'LFM', nameFa: 'لامرد (LFM)', nameEn: 'Lamerd (LFM)' },
+  { code: 'MNS', nameFa: 'منطقة آزاد انزلی (MNS)', nameEn: 'Anzali Free Zone (MNS)' },
+  { code: 'NUJ', nameFa: 'نوژه (NUJ)', nameEn: 'Nojeh (NUJ)' },
+  { code: 'PYK', nameFa: 'پردیس (PYK)', nameEn: 'Pardis (PYK)' },
+  { code: 'RZR', nameFa: 'رامسر (RZR)', nameEn: 'Ramsar (RZR)' },
+  { code: 'SXI', nameFa: 'سیری (SXI)', nameEn: 'Sirri (SXI)' },
+  { code: 'TCG', nameFa: 'تبریز - پایگاه هوایی (TCG)', nameEn: 'Tabriz - Air Base (TCG)' },
+  { code: 'ZAH', nameFa: 'زاهدان (ZAH)', nameEn: 'Zahedan (ZAH)' },
+  
+  // فرودگاه‌های بین‌المللی با پرواز مستقیم به ایران
+  { code: 'AAN', nameFa: 'العین (AAN)', nameEn: 'Al Ain (AAN)' },
+  { code: 'AUH', nameFa: 'ابوظبی (AUH)', nameEn: 'Abu Dhabi (AUH)' },
+  { code: 'DXB', nameFa: 'دبی (DXB)', nameEn: 'Dubai (DXB)' },
+  { code: 'SHJ', nameFa: 'شارجه (SHJ)', nameEn: 'Sharjah (SHJ)' },
+  { code: 'DWC', nameFa: 'دبی - العالم (DWC)', nameEn: 'Dubai - Al Maktoum (DWC)' },
+  { code: 'IST', nameFa: 'استانبول (IST)', nameEn: 'Istanbul (IST)' },
+  { code: 'SAW', nameFa: 'استانبول - صبیحه گوکچن (SAW)', nameEn: 'Istanbul - Sabiha Gokcen (SAW)' },
+  { code: 'ESB', nameFa: 'آنکارا (ESB)', nameEn: 'Ankara (ESB)' },
+  { code: 'ADB', nameFa: 'ازمیر (ADB)', nameEn: 'Izmir (ADB)' },
+  { code: 'AYT', nameFa: 'آنتالیا (AYT)', nameEn: 'Antalya (AYT)' },
+  { code: 'FRA', nameFa: 'فرانکفورت (FRA)', nameEn: 'Frankfurt (FRA)' },
+  { code: 'MUC', nameFa: 'مونیخ (MUC)', nameEn: 'Munich (MUC)' },
+  { code: 'CDG', nameFa: 'پاریس - شارل دوگل (CDG)', nameEn: 'Paris - Charles de Gaulle (CDG)' },
+  { code: 'ORY', nameFa: 'پاریس - اورلی (ORY)', nameEn: 'Paris - Orly (ORY)' },
+  { code: 'LHR', nameFa: 'لندن - هیثرو (LHR)', nameEn: 'London - Heathrow (LHR)' },
+  { code: 'LGW', nameFa: 'لندن - گاتویک (LGW)', nameEn: 'London - Gatwick (LGW)' },
+  { code: 'AMS', nameFa: 'آمستردام (AMS)', nameEn: 'Amsterdam (AMS)' },
+  { code: 'FCO', nameFa: 'رم - فیومیچینو (FCO)', nameEn: 'Rome - Fiumicino (FCO)' },
+  { code: 'MXP', nameFa: 'میلان - مالپنسا (MXP)', nameEn: 'Milan - Malpensa (MXP)' },
+  { code: 'VIE', nameFa: 'وین (VIE)', nameEn: 'Vienna (VIE)' },
+  { code: 'ZRH', nameFa: 'زوریخ (ZRH)', nameEn: 'Zurich (ZRH)' },
+  { code: 'KIX', nameFa: 'اوساکا - کانزای (KIX)', nameEn: 'Osaka - Kansai (KIX)' },
+  { code: 'ICN', nameFa: 'سئول - اینچن (ICN)', nameEn: 'Seoul - Incheon (ICN)' },
+  { code: 'BKK', nameFa: 'بانکوک (BKK)', nameEn: 'Bangkok (BKK)' },
+  { code: 'KUL', nameFa: 'کوالالامپور (KUL)', nameEn: 'Kuala Lumpur (KUL)' },
+  { code: 'SIN', nameFa: 'سنگاپور (SIN)', nameEn: 'Singapore (SIN)' },
+  { code: 'HKG', nameFa: 'هنگ کنگ (HKG)', nameEn: 'Hong Kong (HKG)' },
+  { code: 'PEK', nameFa: 'پکن (PEK)', nameEn: 'Beijing (PEK)' },
+  { code: 'PVG', nameFa: 'شانگهای - پودانگ (PVG)', nameEn: 'Shanghai - Pudong (PVG)' },
+  { code: 'NRT', nameFa: 'توکیو - ناریتا (NRT)', nameEn: 'Tokyo - Narita (NRT)' },
+  { code: 'HND', nameFa: 'توکیو - هاندا (HND)', nameEn: 'Tokyo - Haneda (HND)' },
+  { code: 'JFK', nameFa: 'نیویورک - جان اف کندی (JFK)', nameEn: 'New York - JFK (JFK)' },
+  { code: 'LAX', nameFa: 'لس آنجلس (LAX)', nameEn: 'Los Angeles (LAX)' },
+  { code: 'YYZ', nameFa: 'تورنتو (YYZ)', nameEn: 'Toronto (YYZ)' },
+  { code: 'YVR', nameFa: 'ونکوور (YVR)', nameEn: 'Vancouver (YVR)' },
+  { code: 'SYD', nameFa: 'سیدنی (SYD)', nameEn: 'Sydney (SYD)' },
+  { code: 'MEL', nameFa: 'ملبورن (MEL)', nameEn: 'Melbourne (MEL)' },
+  { code: 'DOH', nameFa: 'دوحه (DOH)', nameEn: 'Doha (DOH)' },
+  { code: 'BAH', nameFa: 'بحرین (BAH)', nameEn: 'Bahrain (BAH)' },
+  { code: 'KWI', nameFa: 'کویت (KWI)', nameEn: 'Kuwait (KWI)' },
+  { code: 'RUH', nameFa: 'ریاض (RUH)', nameEn: 'Riyadh (RUH)' },
+  { code: 'JED', nameFa: 'جده (JED)', nameEn: 'Jeddah (JED)' },
+  { code: 'DMM', nameFa: 'ظهران (DMM)', nameEn: 'Dammam (DMM)' },
+  { code: 'MCT', nameFa: 'مسقط (MCT)', nameEn: 'Muscat (MCT)' },
+  { code: 'BEY', nameFa: 'بیروت (BEY)', nameEn: 'Beirut (BEY)' },
+  { code: 'DAM', nameFa: 'دمشق (DAM)', nameEn: 'Damascus (DAM)' },
+  { code: 'ALP', nameFa: 'حلب (ALP)', nameEn: 'Aleppo (ALP)' },
+  { code: 'EVN', nameFa: 'ایروان (EVN)', nameEn: 'Yerevan (EVN)' },
+  { code: 'GYD', nameFa: 'باکو (GYD)', nameEn: 'Baku (GYD)' },
+  { code: 'TBS', nameFa: 'تفلیس (TBS)', nameEn: 'Tbilisi (TBS)' },
+  { code: 'ASB', nameFa: 'عشق‌آباد (ASB)', nameEn: 'Ashgabat (ASB)' },
+  { code: 'TAS', nameFa: 'تاشکند (TAS)', nameEn: 'Tashkent (TAS)' },
+  { code: 'FRU', nameFa: 'بیشکک (FRU)', nameEn: 'Bishkek (FRU)' },
+  { code: 'ALA', nameFa: 'آلماتی (ALA)', nameEn: 'Almaty (ALA)' },
+  { code: 'ISB', nameFa: 'اسلام‌آباد (ISB)', nameEn: 'Islamabad (ISB)' },
+  { code: 'KHI', nameFa: 'کراچی (KHI)', nameEn: 'Karachi (KHI)' },
+  { code: 'LHE', nameFa: 'لاهور (LHE)', nameEn: 'Lahore (LHE)' },
+  { code: 'DEL', nameFa: 'دهلی (DEL)', nameEn: 'Delhi (DEL)' },
+  { code: 'BOM', nameFa: 'مومبای (BOM)', nameEn: 'Mumbai (BOM)' },
+  { code: 'CCU', nameFa: 'کلکته (CCU)', nameEn: 'Kolkata (CCU)' },
+  { code: 'KBL', nameFa: 'کابل (KBL)', nameEn: 'Kabul (KBL)' }
+];
+
+const els = {
+  persianName: document.getElementById('persianName'),
+  englishName: document.getElementById('englishName'),
+  airlineCode: document.getElementById('airlineCode'),
+  logoFile: document.getElementById('logoFile'),
+  logoPreview: document.getElementById('logoPreview'),
+  airlineDropdown: document.getElementById('airlineDropdown'),
+  logoDropdown: document.getElementById('logoDropdown'),
+  passengersContainer: document.getElementById('passengersContainer'),
+  flightsContainer: document.getElementById('flightsContainer'),
+  addPassengerBtn: document.getElementById('addPassengerBtn'),
+  addIntermediateFlightBtn: document.getElementById('addIntermediateFlightBtn'),
+  addReturnFlightBtn: document.getElementById('addReturnFlightBtn'),
+  price: document.getElementById('price'),
+  baggageCount: document.getElementById('baggageCount'),
+  baggageWeight: document.getElementById('baggageWeight'),
+  handBaggageCount: document.getElementById('handBaggageCount'),
+  handBaggageWeight: document.getElementById('handBaggageWeight'),
+  showBaggage: document.getElementById('showBaggage'),
+  notes: document.getElementById('notes'),
+  showPrice: document.getElementById('showPrice'),
+  datetimeCalendarType: document.getElementById('datetimeCalendarType'),
+  issueDateMode: document.getElementById('issueDateMode'),
+  showQr: document.getElementById('showQr'),
+  qrMode: document.getElementById('qrMode'),
+  langSelect: document.getElementById('langSelect'),
+  formatSelect: document.getElementById('formatSelect'),
+  issuerName: document.getElementById('issuerName'),
+  issuerPhone: document.getElementById('issuerPhone'),
+  issuerEmail: document.getElementById('issuerEmail'),
+  issuerWebsite: document.getElementById('issuerWebsite'),
+  issuerLogoFile: document.getElementById('issuerLogoFile'),
+  issuerLogoPreview: document.getElementById('issuerLogoPreview'),
+  issuerNotes: document.getElementById('issuerNotes'),
+  showIssuer: document.getElementById('showIssuer'),
+  generateBtn: document.getElementById('generateBtn'),
+  downloadBtn: document.getElementById('downloadBtn'),
+  printBtn: document.getElementById('printBtn'),
+  resetBtn: document.getElementById('resetBtn'),
+  selectedLogoData: Object.assign(document.createElement('input'), { type: 'hidden', id: 'selectedLogoData' }),
+  issuerLogoData: Object.assign(document.createElement('input'), { type: 'hidden', id: 'issuerLogoData' }),
+  editIndex: Object.assign(document.createElement('input'), { type: 'hidden', id: 'editIndex', value: '-1' })
+};
+document.body.append(els.selectedLogoData, els.issuerLogoData, els.editIndex);
+
+const debounce = (func, delay) => {
+  let timeout;
+  return (...args) => {
+    clearTimeout(timeout);
+    timeout = setTimeout(() => func(...args), delay);
+  };
+};
+
+const dateUtils = {
+  formatDate(date, lang, includeDayOfWeek = true) {
+    if (!date) return '—';
+    const d = new Date(date);
+    if (isNaN(d.getTime())) return '—';
+    
+    if (lang === 'persian' && typeof persianDate !== 'undefined') {
+      const pd = new persianDate(d);
+      // اصلاح شده: استفاده از تاریخ میلادی برای محاسبه روز هفته
+      const dayOfWeekIndex = d.getDay(); // 0: یکشنبه, 1: دوشنبه, ..., 6: شنبه
+      const pFormatted = pd.format('YYYY/MM/DD HH:mm');
+      const persianDays = ['یک‌شنبه', 'دوشنبه', 'سه‌شنبه', 'چهارشنبه', 'پنج‌شنبه', 'جمعه', 'شنبه'];
+      return includeDayOfWeek ? `${persianDays[dayOfWeekIndex]} ${pFormatted}` : pFormatted;
+    } else {
+      const year = d.getFullYear();
+      const month = String(d.getMonth() + 1).padStart(2, '0');
+      const day = String(d.getDate()).padStart(2, '0');
+      const hours = String(d.getHours()).padStart(2, '0');
+      const minutes = String(d.getMinutes()).padStart(2, '0');
+      const formatted = `${year}-${month}-${day} ${hours}:${minutes}`;
+      return includeDayOfWeek ? `${DAYS_EN[d.getDay()]} ${formatted}` : formatted;
+    }
+  },
+
+  toPersianInput(date) {
+    if (!date || typeof persianDate === 'undefined') return '';
+    const pd = new persianDate(new Date(date));
+    return `${pd.format('YYYY')}/${String(pd.format('MM')).padStart(2, '0')}/${String(pd.format('DD')).padStart(2, '0')} ${String(pd.format('HH')).padStart(2, '0')}:${String(pd.format('mm')).padStart(2, '0')}`;
+  },
+
+  parsePersian(value) {
+    if (!value || typeof persianDate === 'undefined') return null;
+    const match = value.match(/^(\d{4})\/(\d{2})\/(\d{2})\s(\d{2}):(\d{2})$/);
+    if (!match) return null;
+    const [, year, month, day, hours, minutes] = match;
+    const pd = new persianDate([+year, +month, +day, +hours, +minutes]);
+    const d = pd.toDate();
+    if (isNaN(d.getTime())) return null;
+    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}T${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`;
+  },
+
+  getCurrentDateTime() {
+    const d = new Date();
+    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}T${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`;
+  },
+
+  getCurrentDateTimeDisplay(calendarType) {
+    const now = new Date();
+    if (calendarType === 'persian' && typeof persianDate !== 'undefined') {
+      const pd = new persianDate(now);
+      // اصلاح شده: استفاده از تاریخ میلادی برای محاسبه روز هفته
+      const dayOfWeekIndex = now.getDay(); // 0: یکشنبه, 1: دوشنبه, ..., 6: شنبه
+      const persianDays = ['یک‌شنبه', 'دوشنبه', 'سه‌شنبه', 'چهارشنبه', 'پنج‌شنبه', 'جمعه', 'شنبه'];
+      const pFormatted = pd.format('YYYY/MM/DD HH:mm');
+      return `${persianDays[dayOfWeekIndex]} ${pFormatted}`;
+    } else {
+      const dayOfWeek = DAYS_EN[now.getDay()];
+      const year = now.getFullYear();
+      const month = String(now.getMonth() + 1).padStart(2, '0');
+      const day = String(now.getDate()).padStart(2, '0');
+      const hours = String(now.getHours()).padStart(2, '0');
+      const minutes = String(now.getMinutes()).padStart(2, '0');
+      return `${dayOfWeek} ${year}-${month}-${day} ${hours}:${minutes}`;
+    }
+  }
+};
+
+// مدیریت ذخیره‌سازی فرم
+const formManager = {
+  save: () => {
+    try {
+      const formData = {
+        persianName: els.persianName.value,
+        englishName: els.englishName.value,
+        airlineCode: els.airlineCode.value,
+        passengers: getPassengersData(),
+        flights: getFlightsData(),
+        price: els.price.value,
+        baggageCount: els.baggageCount.value,
+        baggageWeight: els.baggageWeight.value,
+        handBaggageCount: els.handBaggageCount.value,
+        handBaggageWeight: els.handBaggageWeight.value,
+        showBaggage: els.showBaggage.value,
+        notes: els.notes.value,
+        showPrice: els.showPrice.value,
+        datetimeCalendarType: els.datetimeCalendarType.value,
+        issueDateMode: els.issueDateMode.value,
+        showQr: els.showQr.value,
+        qrMode: els.qrMode.value,
+        langSelect: els.langSelect.value,
+        issuerName: els.issuerName.value,
+        issuerPhone: els.issuerPhone.value,
+        issuerEmail: els.issuerEmail.value,
+        issuerWebsite: els.issuerWebsite.value,
+        issuerNotes: els.issuerNotes.value,
+        showIssuer: els.showIssuer.value,
+        issuerLogo: els.issuerLogoData.value // اضافه شده: ذخیره لوگوی صادرکننده
+      };
+      localStorage.setItem(FORM_DATA_KEY, JSON.stringify(formData));
+    } catch (e) {
+      console.error('خطا در ذخیره فرم:', e);
+    }
+  },
+
+  load: () => {
+    try {
+      const formData = JSON.parse(localStorage.getItem(FORM_DATA_KEY));
+      if (formData) {
+        Object.keys(formData).forEach(key => {
+          if (els[key] && formData[key] !== undefined) {
+            els[key].value = formData[key];
+          }
+        });
+        
+        // بارگذاری لوگوی صادرکننده
+        if (formData.issuerLogo) {
+          els.issuerLogoData.value = formData.issuerLogo;
+          if (formData.issuerLogo !== DEFAULT_ISSUER_LOGO) {
+            els.issuerLogoPreview.innerHTML = `<img src="${formData.issuerLogo}" alt="Issuer Logo Preview">`;
+            els.issuerLogoPreview.classList.remove('hidden');
+          }
+        }
+        
+        // بارگذاری مسافران
+        if (formData.passengers && Array.isArray(formData.passengers)) {
+          // حذف مسافر پیش‌فرض
+          els.passengersContainer.innerHTML = '';
+          formData.passengers.forEach((passenger, index) => {
+            addPassenger(passenger, index);
+          });
+        }
+        
+        // بارگذاری پروازها
+        if (formData.flights && Array.isArray(formData.flights)) {
+          // حذف پرواز پیش‌فرض
+          els.flightsContainer.innerHTML = '';
+          formData.flights.forEach((flight, index) => {
+            addFlight(flight, index);
+          });
+        }
+      }
+    } catch (e) {
+      console.error('خطا در بارگذاری فرم:', e);
+    }
+  }
+};
+
+// توابع جدید برای مدیریت مسافران
+const getPassengersData = () => {
+  const passengers = [];
+  const passengerSections = els.passengersContainer.querySelectorAll('.passenger-section');
+  
+  passengerSections.forEach(section => {
+    const index = section.dataset.passengerIndex;
+    passengers.push({
+      type: section.querySelector('.passenger-type').value,
+      gender: section.querySelector('.passenger-gender').value,
+      firstName: section.querySelector('.passenger-first-name').value,
+      lastName: section.querySelector('.passenger-last-name').value,
+      ticketNo: section.querySelector('.passenger-ticket-no').value,
+      reference: section.querySelector('.passenger-reference').value || `REF${Math.random().toString(36).slice(2, 9).toUpperCase()}`
+    });
+  });
+  
+  return passengers;
+};
+
+const addPassenger = (passengerData = null, index = null) => {
+  const passengerCount = els.passengersContainer.querySelectorAll('.passenger-section').length;
+  
+  if (passengerCount >= 10) {
+    alert('حداکثر 10 مسافر می‌توانید اضافه کنید.');
+    return;
+  }
+  
+  const newIndex = index !== null ? index : passengerCount;
+  const passengerSection = document.createElement('div');
+  passengerSection.className = 'passenger-section';
+  passengerSection.dataset.passengerIndex = newIndex;
+  
+  passengerSection.innerHTML = `
+    <div class="passenger-header">
+      <div class="passenger-title">مسافر ${newIndex + 1}</div>
+      <button type="button" class="remove-passenger">حذف مسافر</button>
+    </div>
+    <div class="row">
+      <div><label>نوع مسافر</label>
+        <select class="passenger-type">
+          <option value="ADL">بزرگسال (ADL)</option>
+          <option value="CHD">کودک (CHD)</option>
+          <option value="INF">نوزاد (INF)</option>
+        </select>
+      </div>
+      <div><label>جنسیت</label>
+        <select class="passenger-gender">
+          <option value="MR">آقا</option>
+          <option value="MS">خانم</option>
+        </select>
+      </div>
+    </div>
+    <div class="row" style="margin-top:8px">
+      <div><label>نام</label><input class="passenger-first-name" placeholder="نام"></div>
+      <div><label>نام خانوادگی</label><input class="passenger-last-name" placeholder="نام خانوادگی"></div>
+    </div>
+    <div class="row" style="margin-top:8px">
+      <div><label>شماره بلیت (Ticket No)</label><input class="passenger-ticket-no" placeholder="مثال: 96587412"></div>
+      <div><label>کد مرجع (Reference)</label><input class="passenger-reference" placeholder="قابل وارد کردن یا خالی برای تولید خودکار"></div>
+    </div>
+  `;
+  
+  els.passengersContainer.appendChild(passengerSection);
+  
+  // تنظیم مقادیر اگر داده‌ای ارائه شده
+  if (passengerData) {
+    passengerSection.querySelector('.passenger-type').value = passengerData.type || 'ADL';
+    passengerSection.querySelector('.passenger-gender').value = passengerData.gender || 'MR';
+    passengerSection.querySelector('.passenger-first-name').value = passengerData.firstName || '';
+    passengerSection.querySelector('.passenger-last-name').value = passengerData.lastName || '';
+    passengerSection.querySelector('.passenger-ticket-no').value = passengerData.ticketNo || '';
+    passengerSection.querySelector('.passenger-reference').value = passengerData.reference || '';
+  }
+  
+  // اضافه کردن event listener برای دکمه حذف
+  passengerSection.querySelector('.remove-passenger').addEventListener('click', () => {
+    removePassenger(newIndex);
+  });
+  
+  // به‌روزرسانی شماره مسافران
+  updatePassengerNumbers();
+  
+  // فعال کردن Select2 برای فیلدهای جدید
+  initFlightSelect2(passengerSection);
+  
+  return passengerSection;
+};
+
+const removePassenger = (index) => {
+  const passengerSection = els.passengersContainer.querySelector(`[data-passenger-index="${index}"]`);
+  if (passengerSection) {
+    passengerSection.remove();
+    updatePassengerNumbers();
+    renderVoucher();
+    formManager.save();
+  }
+};
+
+const updatePassengerNumbers = () => {
+  const passengerSections = els.passengersContainer.querySelectorAll('.passenger-section');
+  passengerSections.forEach((section, index) => {
+    section.dataset.passengerIndex = index;
+    section.querySelector('.passenger-title').textContent = `مسافر ${index + 1}`;
+  });
+};
+
+// توابع جدید برای مدیریت پروازها
+const getFlightsData = () => {
+  const flights = [];
+  const flightSections = els.flightsContainer.querySelectorAll('.flight-segment');
+  
+  flightSections.forEach(section => {
+    const index = section.dataset.flightIndex;
+    const type = section.dataset.flightType;
+    
+    flights.push({
+      type: type,
+      from: section.querySelector('.flight-from').value,
+      to: section.querySelector('.flight-to').value,
+      datetime: section.querySelector('.flight-datetime').value,
+      datetimePersian: section.querySelector('.flight-datetime-persian').value,
+      flightNo: section.querySelector('.flight-no').value,
+      flightClass: section.querySelector('.flight-class').value
+    });
+  });
+  
+  return flights;
+};
+
+const addFlight = (flightData = null, index = null, type = 'intermediate') => {
+  const flightCount = els.flightsContainer.querySelectorAll('.flight-segment').length;
+  
+  if (type === 'intermediate' && getIntermediateFlightCount() >= 6) {
+    alert('حداکثر 6 پرواز میانی می‌توانید اضافه کنید.');
+    return;
+  }
+  
+  const newIndex = index !== null ? index : flightCount;
+  const flightSection = document.createElement('div');
+  flightSection.className = 'flight-segment';
+  flightSection.dataset.flightIndex = newIndex;
+  flightSection.dataset.flightType = type;
+  
+  let title = '';
+  switch(type) {
+    case 'outbound':
+      title = 'پرواز رفت';
+      break;
+    case 'return':
+      title = 'پرواز برگشت';
+      break;
+    case 'intermediate':
+      title = 'پرواز میانی';
+      break;
+  }
+  
+  flightSection.innerHTML = `
+    <div class="flight-segment-header">
+      <div class="flight-segment-title">${title}</div>
+      <button type="button" class="remove-flight">حذف پرواز</button>
+    </div>
+    <div class="flight-segment-content">
+      <div>
+        <label>مبدا</label>
+        <select class="flight-from">
+          <option value="">انتخاب یا جستجوی شهر...</option>
+        </select>
+      </div>
+      <div>
+        <label>مقصد</label>
+        <select class="flight-to">
+          <option value="">انتخاب یا جستجوی شهر...</option>
+        </select>
+      </div>
+      <div>
+        <label>تاریخ و زمان پرواز</label>
+        <div class="date-input-container">
+          <input class="flight-datetime date-input" type="datetime-local" placeholder="2025-12-31T14:30">
+          <input class="flight-datetime-persian date-input" type="text" placeholder="1404/08/12 14:30" dir="ltr">
+        </div>
+      </div>
+      <div>
+        <label>شماره پرواز</label>
+        <input class="flight-no" placeholder="مثال: ZV123">
+      </div>
+      <div>
+        <label>کلاس پروازی</label>
+        <select class="flight-class">
+          <option value="">انتخاب یا وارد کردن کلاس دلخواه</option>
+          <option value="Economy">اکونومی (Economy)</option>
+          <option value="Premium Economy">پریمیوم اکونومی (Premium Economy)</option>
+          <option value="Business">بیزینس (Business)</option>
+          <option value="First Class">فرست کلاس (First Class)</option>
+          <option value="Business Class">بیزینس کلاس (Business Class)</option>
+          <option value="Economy Class">اکونومی کلاس (Economy Class)</option>
+          <option value="custom">کلاس دلخواه (Custom Class)</option>
+        </select>
+      </div>
+    </div>
+  `;
+  
+  // اضافه کردن پرواز به کانتینر با توجه به نوع
+  if (type === 'return') {
+    // پرواز برگشت را در انتها اضافه کن
+    els.flightsContainer.appendChild(flightSection);
+  } else if (type === 'intermediate') {
+    // پرواز میانی را قبل از پرواز برگشت اضافه کن
+    const returnFlight = els.flightsContainer.querySelector('[data-flight-type="return"]');
+    if (returnFlight) {
+      els.flightsContainer.insertBefore(flightSection, returnFlight);
+    } else {
+      els.flightsContainer.appendChild(flightSection);
+    }
+  } else {
+    // پرواز رفت را در ابتدا اضافه کن
+    els.flightsContainer.insertBefore(flightSection, els.flightsContainer.firstChild);
+  }
+  
+  // تنظیم مقادیر اگر داده‌ای ارائه شده
+  if (flightData) {
+    flightSection.querySelector('.flight-from').value = flightData.from || '';
+    flightSection.querySelector('.flight-to').value = flightData.to || '';
+    flightSection.querySelector('.flight-datetime').value = flightData.datetime || '';
+    flightSection.querySelector('.flight-datetime-persian').value = flightData.datetimePersian || '';
+    flightSection.querySelector('.flight-no').value = flightData.flightNo || '';
+    flightSection.querySelector('.flight-class').value = flightData.flightClass || '';
+  }
+  
+  // اضافه کردن event listener برای دکمه حذف
+  flightSection.querySelector('.remove-flight').addEventListener('click', () => {
+    removeFlight(newIndex);
+  });
+  
+  // اضافه کردن event listener برای تاریخ‌ها
+  const datetimeInput = flightSection.querySelector('.flight-datetime');
+  const datetimePersianInput = flightSection.querySelector('.flight-datetime-persian');
+  
+  datetimeInput.addEventListener('input', debounce(() => {
+    handleManualDateEdit('flight', datetimeInput.value, false, newIndex);
+  }, 300));
+  
+  datetimePersianInput.addEventListener('input', debounce(() => {
+    handleManualDateEdit('flight', datetimePersianInput.value, true, newIndex);
+  }, 300));
+  
+  // به‌روزرسانی شماره پروازها
+  updateFlightNumbers();
+  
+  // فعال کردن Select2 برای فیلدهای جدید
+  initFlightSelect2(flightSection);
+  
+  return flightSection;
+};
+
+const removeFlight = (index) => {
+  const flightSection = els.flightsContainer.querySelector(`[data-flight-index="${index}"]`);
+  if (flightSection) {
+    flightSection.remove();
+    updateFlightNumbers();
+    renderVoucher();
+    formManager.save();
+  }
+};
+
+const updateFlightNumbers = () => {
+  const flightSections = els.flightsContainer.querySelectorAll('.flight-segment');
+  flightSections.forEach((section, index) => {
+    section.dataset.flightIndex = index;
+  });
+};
+
+const getIntermediateFlightCount = () => {
+  return els.flightsContainer.querySelectorAll('[data-flight-type="intermediate"]').length;
+};
+
+const getReturnFlightCount = () => {
+  return els.flightsContainer.querySelectorAll('[data-flight-type="return"]').length;
+};
+
+const logoManager = {
+  load: () => {
+    try {
+      const data = JSON.parse(localStorage.getItem(LOGOS_KEY) || '[]');
+      return Array.isArray(data) ? data : [];
+    } catch (e) {
+      console.error('خطا در بارگذاری لوگوها:', e);
+      return [];
+    }
+  },
+
+  save: list => {
+    try {
+      localStorage.setItem(LOGOS_KEY, JSON.stringify(list));
+    } catch (e) {
+      console.error('خطا در ذخیره لوگوها:', e);
+    }
+  },
+
+  initSelect2: (dropdown, showActions = false) => {
+    try {
+      $(dropdown).select2({
+        templateResult: formatOption,
+        templateSelection: formatOption,
+        dropdownCssClass: 'rtl',
+        width: '100%'
+      });
+      function formatOption(option) {
+        if (!option.id) return option.text;
+        const logos = logoManager.load();
+        const logo = logos[option.id];
+        if (!logo) return option.text;
+        return $(`
+          <span style="display:flex;align-items:center;justify-content:space-between;">
+            <span class="select2-option-info">
+              <span><img src="${logo.data || DEFAULT_LOGO}" style="width:30px;height:20px;object-fit:contain;margin-left:8px;vertical-align:middle;" />${logo.persianName || 'بی‌نام'}</span>
+              <span style="font-size:12px;color:#6b7280">${logo.englishName || 'Unnamed'} (${logo.code || '—'})</span>
+            </span>
+            ${showActions ? `
+            <span class="select2-option-actions">
+              <span class="action-btn edit-btn" data-index="${option.id}">ویرایش</span>
+              <span class="action-btn delete-btn" data-index="${option.id}">حذف</span>
+            </span>
+            ` : ''}
+          </span>
+        `);
+      }
+      $(dropdown).next('.select2-container').find('.select2-selection').css('height', 'auto');
+      if (showActions) {
+        $(document).on('click', '.delete-btn', function(e) {
+          e.stopPropagation();
+          const index = $(this).data('index');
+          if (confirm('آیا می‌خواهید این شرکت حذف شود؟')) {
+            const logos = logoManager.load();
+            logos.splice(index, 1);
+            logoManager.save(logos);
+            logoManager.renderDropdown('airlineDropdown', true);
+            logoManager.renderDropdown('logoDropdown', false);
+            renderVoucher();
+          }
+        });
+        $(document).on('click', '.edit-btn', function(e) {
+          e.stopPropagation();
+          const index = $(this).data('index');
+          const logos = logoManager.load();
+          const logo = logos[index];
+          if (logo) {
+            els.persianName.value = logo.persianName || '';
+            els.englishName.value = logo.englishName || '';
+            els.airlineCode.value = logo.code || '';
+            els.selectedLogoData.value = logo.data || DEFAULT_LOGO;
+            els.editIndex.value = index;
+            els.logoPreview.innerHTML = `<img src="${logo.data || DEFAULT_LOGO}" alt="Logo Preview">`;
+            els.logoPreview.classList.remove('hidden');
+            $(els.airlineDropdown).val(index).trigger('change.select2');
+            $(els.logoDropdown).val(index).trigger('change.select2');
+            renderVoucher();
+          }
+        });
+      }
+    } catch (e) {
+      console.error('خطا در راه‌اندازی Select2:', e);
+    }
+  },
+
+  renderDropdown(dropdownId, showActions = false) {
+    const dropdown = document.getElementById(dropdownId);
+    if (!dropdown) return console.error(`Dropdown with ID ${dropdownId} not found`);
+    dropdown.innerHTML = '<option value="">انتخاب کنید...</option>';
+    const logos = logoManager.load();
+    logos.forEach((logo, idx) => {
+      const option = document.createElement('option');
+      option.value = idx;
+      option.textContent = logo.persianName || 'بی‌نام';
+      option.dataset.logo = logo.data || DEFAULT_LOGO;
+      option.dataset.englishName = logo.englishName || 'Unnamed';
+      option.dataset.code = logo.code || '—';
+      dropdown.appendChild(option);
+    });
+    $(dropdown).off('select2:select').on('select2:select', (e) => {
+      const idx = e.target.value;
+      const logos = logoManager.load();
+      if (idx === '') {
+        els.persianName.value = '';
+        els.englishName.value = '';
+        els.airlineCode.value = '';
+        els.selectedLogoData.value = DEFAULT_LOGO;
+        els.editIndex.value = '-1';
+        els.logoPreview.innerHTML = '';
+        els.logoPreview.classList.add('hidden');
+      } else {
+        const logo = logos[idx];
+        els.persianName.value = logo.persianName || '';
+        els.englishName.value = logo.englishName || '';
+        els.airlineCode.value = logo.code || '';
+        els.selectedLogoData.value = logo.data || DEFAULT_LOGO;
+        els.editIndex.value = idx;
+        els.logoPreview.innerHTML = `<img src="${logo.data || DEFAULT_LOGO}" alt="Logo Preview">`;
+        els.logoPreview.classList.remove('hidden');
+      }
+      if (dropdownId === 'airlineDropdown') {
+        els.logoDropdown.value = idx;
+        $(els.logoDropdown).val(idx).trigger('change.select2');
+      } else {
+        els.airlineDropdown.value = idx;
+        $(els.airlineDropdown).val(idx).trigger('change.select2');
+      }
+      renderVoucher();
+    });
+    logoManager.initSelect2(dropdown, showActions);
+  }
+};
+
+// راه‌اندازی Select2 برای شهرها با قابلیت جستجوی پیشرفته و تایپ مستقیم
+const initCitySelect2 = () => {
+  const formatCityOption = (city) => {
+    if (!city.id) return city.text;
+    // اضافه شده: نمایش مقادیر تایپ شده توسط کاربر
+    if (city.isNew) {
+      return $(`<span>${city.text}</span>`);
+    }
+    return $(`
+      <span>
+        <span>${city.nameFa}</span>
+        <br>
+        <small style="color: #666;">${city.nameEn}</small>
+      </span>
+    `);
+  };
+
+  // تنظیمات مشترک برای هر دو دراپ‌داون
+  const select2Options = {
+    data: airports.map(airport => ({
+      id: airport.code,
+      text: airport.nameFa,
+      nameFa: airport.nameFa,
+      nameEn: airport.nameEn,
+      searchText: `${airport.nameFa} ${airport.nameEn} ${airport.code} ${airport.nameFa.replace(/[()]/g, '')} ${airport.nameEn.replace(/[()]/g, '')}`.toLowerCase()
+    })),
+    templateResult: formatCityOption,
+    templateSelection: formatCityOption,
+    dropdownCssClass: 'rtl',
+    width: '100%',
+    placeholder: 'انتخاب یا جستجوی شهر...',
+    allowClear: true,
+    tags: true, // امکان تایپ مستقیم و اضافه کردن مقادیر دلخواه
+    createTag: function (params) {
+      const term = $.trim(params.term);
+      if (term === '') return null;
+      
+      return {
+        id: term,
+        text: term,
+        isNew: true
+      };
+    },
+    matcher: function(params, data) {
+      // اگر داده جدید است (توسط کاربر ایجاد شده)
+      if (data.isNew) {
+        return data;
+      }
+      
+      // اگر جستجو خالی است، همه موارد را نمایش بده
+      if ($.trim(params.term) === '') {
+        return data;
+      }
+      
+      // جستجو در تمام فیلدها (فارسی، انگلیسی، کد IATA)
+      const term = params.term.toLowerCase();
+      const searchableText = data.searchText || 
+        `${data.nameFa || ''} ${data.nameEn || ''} ${data.id || ''}`.toLowerCase();
+      
+      if (searchableText.indexOf(term) > -1) {
+        return data;
+      }
+      
+      return null;
+    },
+    language: {
+      noResults: () => 'نتیجه‌ای یافت نشد',
+      searching: () => 'در حال جستجو...'
+    }
+  };
+
+  // اعمال Select2 به تمام فیلدهای from و to موجود و آینده
+  const initFlightSelect2 = (container = document) => {
+    $(container).find('.flight-from').select2(select2Options);
+    $(container).find('.flight-to').select2(select2Options);
+    
+    // راه‌اندازی Select2 برای کلاس پرواز
+    $(container).find('.flight-class').select2({
+      tags: true,
+      dropdownCssClass: 'rtl',
+      width: '100%',
+      placeholder: 'انتخاب یا وارد کردن کلاس دلخواه',
+      allowClear: true,
+      language: {
+        noResults: () => 'نتیجه‌ای یافت نشد'
+      }
+    }).on('select2:select', function(e) {
+      if (e.params.data.id === 'custom') {
+        $(this).val('').trigger('change');
+        $(this).select2('open');
+      }
+    });
+  };
+
+  // راه‌اندازی اولیه برای فیلدهای موجود
+  initFlightSelect2();
+
+  return initFlightSelect2;
+};
+
+const initFlightSelect2 = initCitySelect2();
+
+// اضافه شده: مدیریت ویرایش دستی تاریخ‌ها
+const handleManualDateEdit = (type, value, isPersian = false, flightIndex = null) => {
+  try {
+    let parsed = value;
+    if (isPersian) parsed = dateUtils.parsePersian(value);
+    
+    if (parsed) {
+      // به‌روزرسانی فیلدهای تاریخ
+      if (flightIndex !== null) {
+        // برای پروازهای خاص
+        const flightSection = els.flightsContainer.querySelector(`[data-flight-index="${flightIndex}"]`);
+        if (flightSection) {
+          if (isPersian) {
+            flightSection.querySelector('.flight-datetime').value = parsed;
+          } else {
+            flightSection.querySelector('.flight-datetime-persian').value = dateUtils.toPersianInput(parsed);
+          }
+        }
+      }
+    }
+    
+    renderVoucher();
+    formManager.save();
+  } catch (e) {
+    console.error('خطا در ویرایش دستی تاریخ:', e);
+  }
+};
+
+const renderVoucher = () => {
+  try {
+    const data = {
+      passengers: getPassengersData(),
+      flights: getFlightsData(),
+      price: els.price.value || '—',
+      baggageCount: els.baggageCount.value || '—',
+      baggageWeight: els.baggageWeight.value || '—',
+      handBaggageCount: els.handBaggageCount.value || '—',
+      handBaggageWeight: els.handBaggageWeight.value || '—',
+      showBaggage: els.showBaggage.value === 'yes',
+      issueDateMode: els.issueDateMode.value,
+      issueDateTime: els.issueDateMode.value === 'auto' ? dateUtils.getCurrentDateTime() : '—',
+      showQr: els.showQr.value === 'yes',
+      qrMode: els.qrMode.value,
+      notes: els.notes.value || '',
+      showPrice: els.showPrice.value === 'yes',
+      showIssuer: els.showIssuer.value === 'yes',
+      lang: els.langSelect.value,
+      logoData: els.selectedLogoData.value || DEFAULT_LOGO,
+      persianName: els.persianName.value || 'هواپیمایی',
+      englishName: els.englishName.value || 'Airline',
+      airlineCode: els.airlineCode.value || '—',
+      issuerLogo: els.issuerLogoData.value || DEFAULT_ISSUER_LOGO,
+      issuerName: els.issuerName.value || '',
+      issuerPhone: els.issuerPhone.value || '',
+      issuerEmail: els.issuerEmail.value || '',
+      issuerWebsite: els.issuerWebsite.value || '',
+      issuerNotes: els.issuerNotes.value || ''
+    };
+
+    const t = (fa, ar, en, isDateLabel = false, isGregorianDate = false) => {
+      if (isDateLabel) return data.lang === 'fa' ? (isGregorianDate ? 'Flight Date / Time' : fa) : data.lang === 'ar' ? (isGregorianDate ? 'Flight Date / Time' : ar) : en;
+      return data.lang === 'fa' ? `${fa} / ${en}` : data.lang === 'ar' ? `${ar} / ${en}` : en;
+    };
+
+    const formattedPassengerType = (type) => {
+      return data.lang === 'fa'
+        ? { ADL: '(بزرگسال / ADL)', CHD: '(کودک / CHD)', INF: '(نوزاد / INF)' }[type] || type
+        : { ADL: '(ADL)', CHD: '(CHD)', INF: '(INF)' }[type] || type;
+    };
+
+    // نمایش مسافران
+    let passengersHTML = '';
+    data.passengers.forEach((passenger, index) => {
+      passengersHTML += `
+        <div class="field">
+          <div class="label">${t('مسافر', 'مسافر', 'Passenger')} ${index + 1}</div>
+          <div class="value">${passenger.gender} ${passenger.firstName} ${passenger.lastName} ${formattedPassengerType(passenger.type)}</div>
+        </div>
+        <div class="field">
+          <div class="label">${t('شماره بلیت', 'رقم التذكرة', 'Ticket No')} ${index + 1}</div>
+          <div class="value">${passenger.ticketNo || '—'}</div>
+        </div>
+        <div class="field">
+          <div class="label">${t('کد مرجع', 'المرجع', 'Reference')} ${index + 1}</div>
+          <div class="value">${passenger.reference}</div>
+        </div>
+      `;
+    });
+
+    // نمایش پروازها
+    let flightsHTML = '';
+    data.flights.forEach((flight, index) => {
+      const fromAirport = airports.find(a => a.code === flight.from);
+      const toAirport = airports.find(a => a.code === flight.to);
+      
+      let fromDisplay, toDisplay;
+      
+      if (data.lang === 'en') {
+        fromDisplay = fromAirport ? fromAirport.nameEn : flight.from;
+        toDisplay = toAirport ? toAirport.nameEn : flight.to;
+      } else {
+        if (fromAirport) {
+          fromDisplay = `${fromAirport.nameFa}<br><small style="color:var(--muted);font-size:12px">${fromAirport.nameEn}</small>`;
+        } else {
+          fromDisplay = flight.from;
+        }
+        
+        if (toAirport) {
+          toDisplay = `${toAirport.nameFa}<br><small style="color:var(--muted);font-size:12px">${toAirport.nameEn}</small>`;
+        } else {
+          toDisplay = flight.to;
+        }
+      }
+      
+      // استفاده از تاریخ ذخیره شده یا محاسبه شده
+      const datetimeValue = flight.datetime || '';
+      const persianDateDisplay = datetimeValue ? dateUtils.formatDate(datetimeValue, 'persian', true) : '—';
+      const gregorianDateDisplay = datetimeValue ? dateUtils.formatDate(datetimeValue, 'gregorian', true) : '—';
+      
+      let flightTitle = '';
+      switch(flight.type) {
+        case 'outbound':
+          flightTitle = data.lang === 'en' ? 'Outbound Flight' : 'پرواز رفت';
+          break;
+        case 'return':
+          flightTitle = data.lang === 'en' ? 'Return Flight' : 'پرواز برگشت';
+          break;
+        case 'intermediate':
+          flightTitle = data.lang === 'en' ? `Intermediate Flight ${index}` : `پرواز میانی ${index}`;
+          break;
+      }
+      
+      const flightDateDisplay = data.lang === 'en' 
+        ? `
+          <div class="field">
+            <div class="label">${t('تاریخ / زمان پرواز', 'تاريخ / وقت الرحلة', 'Flight Date / Time')}</div>
+            <div class="value">${gregorianDateDisplay}</div>
+          </div>
+        `
+        : `
+          <div class="field">
+            <div class="label">${t('تاریخ / زمان پرواز', 'تاريخ / وقت الرحلة', 'Flight Date / Time', true)}</div>
+            <div class="value">${persianDateDisplay}</div>
+          </div>
+          <div class="field">
+            <div class="label">${t('تاریخ / زمان پرواز', 'تاريخ / وقت الرحلة', 'Flight Date / Time', true, true)}</div>
+            <div class="value">${gregorianDateDisplay}</div>
+          </div>
+        `;
+
+      flightsHTML += `
+        <div style="border: 1px solid var(--border-color); border-radius: 8px; padding: 12px; margin-bottom: 12px; background: #f8fafc;">
+          <h4 style="font-size:14px;color:var(--primary);margin-bottom:12px">${flightTitle}</h4>
+          <div class="field">
+            <div class="label">${t('شماره پرواز', 'رقم الرحلة', 'Flight No')}</div>
+            <div class="value">${flight.flightNo || '—'}</div>
+          </div>
+          <div class="field">
+            <div class="label">${t('مبدا', 'منطلق', 'From')}</div>
+            <div class="value">${fromDisplay}</div>
+          </div>
+          <div class="field">
+            <div class="label">${t('مقصد', 'الوصول', 'To')}</div>
+            <div class="value">${toDisplay}</div>
+          </div>
+          ${flightDateDisplay}
+          <div class="field">
+            <div class="label">${t('کلاس', 'الدرجة', 'Class')}</div>
+            <div class="value">${flight.flightClass || '—'}</div>
+          </div>
+        </div>
+      `;
+    });
+
+    const airlineNameDisplay = data.lang === 'en'
+      ? `<div style="font-size:16px;font-weight:500;color:var(--text-dark)">${data.englishName}</div>`
+      : `
+        <div style="font-size:20px;font-weight:700;color:var(--primary)">${data.persianName}</div>
+        <div style="font-size:16px;font-weight:500;color:var(--text-dark)">${data.englishName}</div>
+      `;
+
+    // نمایش تاریخ و ساعت صدور
+    let issueDateDisplay = '';
+    if (data.issueDateMode !== 'none' && data.issueDateTime !== '—') {
+      if (data.lang === 'fa') {
+        const persianIssue = dateUtils.formatDate(data.issueDateTime, 'persian', false);
+        const gregorianIssue = dateUtils.formatDate(data.issueDateTime, 'gregorian', false);
+        issueDateDisplay = `${persianIssue}<br>${gregorianIssue}`;
+      } else {
+        issueDateDisplay = dateUtils.formatDate(data.issueDateTime, 'gregorian', false);
+      }
+    }
+
+    // نمایش اطلاعات بار به صورت لنداسکیپ
+    const baggageHTML = data.showBaggage ? `
+      <div class="baggage-section">
+        <h4 style="font-size:14px;color:var(--primary);margin-bottom:12px">${t('اطلاعات بار', 'معلومات الأمتعة', 'Baggage Info')}</h4>
+        <div class="baggage-row">
+          <div class="baggage-field">
+            <div class="baggage-label">${t('تعداد بسته بار', 'عدد الأمتعة', 'Baggage Count')}</div>
+            <div class="baggage-value">${data.baggageCount}</div>
+          </div>
+          <div class="baggage-field">
+            <div class="baggage-label">${t('وزن مجاز بار (کیلوگرم)', 'الوزن المسموح للأمتعة (كجم)', 'Baggage Weight (kg)')}</div>
+            <div class="baggage-value">${data.baggageWeight}</div>
+          </div>
+          <div class="baggage-field">
+            <div class="baggage-label">${t('تعداد بسته بار دستی', 'عدد أمتعة اليد', 'Hand Baggage Count')}</div>
+            <div class="baggage-value">${data.handBaggageCount}</div>
+          </div>
+          <div class="baggage-field">
+            <div class="baggage-label">${t('وزن مجاز بار دستی (کیلوگرم)', 'الوزن المسموح لأمتعة اليد (كجم)', 'Hand Baggage Weight (kg)')}</div>
+            <div class="baggage-value">${data.handBaggageWeight}</div>
+          </div>
+        </div>
+      </div>
+    ` : '';
+
+    const html = `
+      <div class="head">
+        <div class="airline">
+          <img src="${data.logoData}" alt="airline logo">
+          <div>
+            ${airlineNameDisplay}
+            <div style="font-size:13px;color:var(--muted);margin-top:4px">${t('ووچر پرواز', 'قسيمة الرحلة', 'Flight Voucher')}</div>
+          </div>
+        </div>
+        <div class="ticket-info" style="text-align:center">
+          ${data.issueDateMode !== 'none' && issueDateDisplay ? `
+          <div class="field">
+            <div class="label">${t('تاریخ و ساعت صدور', 'تاريخ و وقت الإصدار', 'Issue Date and Time')}</div>
+            <div class="value">${issueDateDisplay}</div>
+          </div>
+          ` : ''}
+        </div>
+      </div>
+      <div class="flight-info">
+        <div class="col">
+          ${passengersHTML}
+          ${data.showPrice ? `
+          <div class="field">
+            <div class="label">${t('قیمت', 'السعر', 'Price')}</div>
+            <div class="value">${data.price}</div>
+          </div>
+          ` : ''}
+        </div>
+        <div class="col">
+          ${flightsHTML}
+        </div>
+      </div>
+      <div class="lower-section">
+        ${baggageHTML}
+        ${data.showQr ? `<div style="display:flex;justify-content:flex-start;"><canvas id="qrCanvas" class="qr"></canvas></div>` : ''}
+      </div>
+      ${data.notes ? `
+      <div class="notes-section">
+        <h4 style="font-size:14px;color:var(--primary);margin-bottom:12px">${t('توضیحات', 'ملاحظة', 'Notes')}</h4>
+        <div style="color:var(--muted);font-size:13px">${data.notes}</div>
+      </div>
+      ` : ''}
+      ${data.showIssuer ? `
+      <footer class="voucher-footer">
+        <div class="issuer">
+          <img src="${data.issuerLogo}" alt="issuer logo">
+          <div style="font-size:13px;color:var(--text-dark)">
+            <div style="font-weight:700">${data.issuerName}</div>
+            <div style="font-size:12px;color:var(--muted);margin-top:4px">${data.issuerPhone ? `Tel: ${data.issuerPhone}` : ''} ${data.issuerEmail ? ` | ${data.issuerEmail}` : ''}</div>
+            <div style="font-size:12px;color:var(--muted)">${data.issuerWebsite}</div>
+            ${data.issuerNotes ? `<div style="margin-top:8px;font-size:12px;color:var(--muted)">${data.issuerNotes}</div>` : ''}
+          </div>
+        </div>
+      </footer>
+      ` : ''}
+    `;
+
+    const container = document.getElementById('voucherPreview');
+    container.innerHTML = html;
+    container.className = `voucher ${data.lang === 'en' ? 'ltr' : 'rtl'}`;
+    container.setAttribute('dir', data.lang === 'en' ? 'ltr' : 'rtl');
+    container.style.textAlign = data.lang === 'en' ? 'left' : 'right';
+    container.dataset.reference = data.passengers[0]?.reference || 'REF';
+
+    if (data.showQr) {
+      try {
+        const qrCanvas = document.getElementById('qrCanvas');
+        if (qrCanvas) {
+          // ایجاد متن برای QR Code با اطلاعات تمام مسافران و پروازها
+          let qrText = '';
+          if (data.qrMode === 'ticket') {
+            qrText = 'Flight Voucher\n';
+            qrText += `Airline: ${data.persianName} (${data.englishName})\n`;
+            qrText += `Passengers: ${data.passengers.length}\n`;
+            
+            data.passengers.forEach((passenger, index) => {
+              qrText += `Passenger ${index+1}: ${passenger.gender} ${passenger.firstName} ${passenger.lastName} (${passenger.type})\n`;
+              qrText += `Ticket ${index+1}: ${passenger.ticketNo || 'N/A'}\n`;
+              qrText += `Reference ${index+1}: ${passenger.reference}\n`;
+            });
+            
+            qrText += `Flights: ${data.flights.length}\n`;
+            data.flights.forEach((flight, index) => {
+              qrText += `Flight ${index+1}: ${flight.flightNo} (${flight.from} to ${flight.to})\n`;
+            });
+            
+            if (data.showPrice && data.price !== '—') {
+              qrText += `Price: ${data.price}\n`;
+            }
+            
+            if (data.showBaggage) {
+              qrText += `Baggage: ${data.baggageCount}/${data.baggageWeight}kg\n`;
+              qrText += `Hand Baggage: ${data.handBaggageCount}/${data.handBaggageWeight}kg\n`;
+            }
+            
+            if (data.issueDateMode !== 'none' && data.issueDateTime) {
+              qrText += `Issue Date: ${dateUtils.formatDate(data.issueDateTime, 'persian', false)}/${dateUtils.formatDate(data.issueDateTime, 'gregorian', false)}\n`;
+            }
+          } else {
+            qrText = data.passengers[0]?.reference || 'REF';
+          }
+          
+          new QRious({
+            element: qrCanvas,
+            value: qrText,
+            size: 130
+          });
+        }
+      } catch (e) {
+        console.error('تولید QR Code ناموفق بود:', e);
+        const qrCanvas = document.getElementById('qrCanvas');
+        if (qrCanvas) {
+          const ctx = qrCanvas.getContext('2d');
+          ctx.fillStyle = '#fff';
+          ctx.fillRect(0, 0, 130, 130);
+          ctx.fillStyle = '#000';
+          ctx.font = '13px Vazir';
+          ctx.textAlign = 'center';
+          ctx.fillText(data.passengers[0]?.reference || 'REF', 65, 65);
+        }
+      }
+    }
+  } catch (e) {
+    console.error('خطا در رندر ووچر:', e);
+  }
+};
+
+const handleLogoAdd = () => {
+  try {
+    const persianName = els.persianName.value.trim();
+    const englishName = els.englishName.value.trim();
+    const code = els.airlineCode.value.trim();
+    const file = els.logoFile.files[0];
+    
+    if (!persianName || !englishName) {
+      alert('لطفاً نام فارسی و انگلیسی شرکت را وارد کنید.');
+      return;
+    }
+
+    const logos = logoManager.load();
+    const editIndex = parseInt(els.editIndex.value, 10);
+
+    const processLogo = (logoData) => {
+      const newLogo = { persianName, englishName, code, data: logoData };
+      
+      if (editIndex !== -1 && logos[editIndex]) {
+        logos[editIndex] = newLogo;
+      } else {
+        logos.push(newLogo);
+      }
+      
+      logoManager.save(logos);
+      logoManager.renderDropdown('airlineDropdown', true);
+      logoManager.renderDropdown('logoDropdown', false);
+      
+      // Reset form
+      els.persianName.value = '';
+      els.englishName.value = '';
+      els.airlineCode.value = '';
+      els.logoFile.value = '';
+      els.logoPreview.innerHTML = '';
+      els.logoPreview.classList.add('hidden');
+      els.selectedLogoData.value = DEFAULT_LOGO;
+      els.editIndex.value = '-1';
+      
+      $(els.airlineDropdown).val('').trigger('change.select2');
+      $(els.logoDropdown).val('').trigger('change.select2');
+      
+      renderVoucher();
+    };
+
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = e => processLogo(e.target.result);
+      reader.readAsDataURL(file);
+    } else {
+      const logoData = (editIndex !== -1 && logos[editIndex]) ? logos[editIndex].data : DEFAULT_LOGO;
+      processLogo(logoData);
+    }
+  } catch (e) {
+    console.error('خطا در افزودن/ویرایش لوگو:', e);
+  }
+};
+
+const handleLogoClear = () => {
+  try {
+    if (confirm('همه لوگوها پاک شوند؟')) {
+      logoManager.save([]);
+      logoManager.renderDropdown('airlineDropdown', true);
+      logoManager.renderDropdown('logoDropdown', false);
+      renderVoucher();
+    }
+  } catch (e) {
+    console.error('خطا در پاک کردن لوگوها:', e);
+  }
+};
+
+const handleAirlineLogoChange = (e) => {
+  try {
+    const file = e.target.files[0];
+    if (!file) {
+      els.logoPreview.innerHTML = '';
+      els.logoPreview.classList.add('hidden');
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = e => {
+      els.logoPreview.innerHTML = `<img src="${e.target.result}" alt="Logo Preview">`;
+      els.logoPreview.classList.remove('hidden');
+      els.selectedLogoData.value = e.target.result;
+      renderVoucher();
+    };
+    reader.readAsDataURL(file);
+  } catch (e) {
+    console.error('خطا در بارگذاری پیش‌نمایش لوگوی شرکت:', e);
+  }
+};
+
+const handleIssuerLogoChange = (e) => {
+  try {
+    const file = e.target.files[0];
+    if (!file) {
+      els.issuerLogoPreview.innerHTML = '';
+      els.issuerLogoPreview.classList.add('hidden');
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = e => {
+      els.issuerLogoPreview.innerHTML = `<img src="${e.target.result}" alt="Issuer Logo Preview">`;
+      els.issuerLogoPreview.classList.remove('hidden');
+      els.issuerLogoData.value = e.target.result;
+      formManager.save(); // اضافه شده: ذخیره فرم پس از تغییر لوگوی صادرکننده
+      renderVoucher();
+    };
+    reader.readAsDataURL(file);
+  } catch (e) {
+    console.error('خطا در بارگذاری پیش‌نمایش لوگوی صادرکننده:', e);
+  }
+};
+
+const handleIssueDateModeChange = () => {
+  try {
+    renderVoucher();
+  } catch (e) {
+    console.error('خطا در تغییر حالت تاریخ صدور:', e);
+  }
+};
+
+const handleDownload = async () => {
+  try {
+    const format = els.formatSelect.value;
+    const node = document.getElementById('voucherPreview');
+    
+    if (format === 'pdf') {
+      const { jsPDF } = window.jspdf;
+      const pdf = new jsPDF({ 
+        orientation: 'portrait', 
+        unit: 'pt', 
+        format: 'a4' 
+      });
+      
+      // محاسبه ارتفاع ووچر
+      const voucherHeight = node.scrollHeight;
+      const pageHeight = pdf.internal.pageSize.height - 80; // 80pt برای حاشیه
+      
+      // اگر ووچر بلندتر از یک صفحه است، از چند صفحه استفاده کن
+      if (voucherHeight > pageHeight) {
+        // استفاده از html2canvas برای گرفتن عکس از ووچر
+        const canvas = await html2canvas(node, { 
+          scale: 2, 
+          useCORS: true, 
+          backgroundColor: '#ffffff',
+          logging: false
+        });
+        
+        const imgData = canvas.toDataURL('image/png');
+        const imgWidth = pdf.internal.pageSize.getWidth() - 40;
+        const imgHeight = (canvas.height * imgWidth) / canvas.width;
+        
+        let heightLeft = imgHeight;
+        let position = 20;
+        
+        pdf.addImage(imgData, 'PNG', 20, position, imgWidth, imgHeight);
+        heightLeft -= pageHeight;
+        
+        // اضافه کردن صفحات اضافی اگر نیاز باشد
+        while (heightLeft > 0) {
+          position = heightLeft - imgHeight + 20;
+          pdf.addPage();
+          pdf.addImage(imgData, 'PNG', 20, position, imgWidth, imgHeight);
+          heightLeft -= pageHeight;
+        }
+      } else {
+        // ووچر کوتاه - روش معمول
+        const canvas = await html2canvas(node, { 
+          scale: 2, 
+          useCORS: true, 
+          backgroundColor: '#ffffff',
+          logging: false
+        });
+        
+        const imgWidthPt = pdf.internal.pageSize.getWidth() - 40;
+        const imgHeightPt = (canvas.height * imgWidthPt) / canvas.width;
+        
+        pdf.addImage(
+          canvas.toDataURL('image/png'), 
+          'PNG', 
+          20, 20, 
+          imgWidthPt, 
+          imgHeightPt
+        );
+      }
+      
+      pdf.save(`${node.dataset.reference || 'voucher'}.pdf`);
+    } else {
+      // فرمت JPG
+      const canvas = await html2canvas(node, { 
+        scale: 3, 
+        useCORS: true, 
+        backgroundColor: '#ffffff',
+        logging: false
+      });
+      
+      const tempCanvas = document.createElement('canvas');
+      tempCanvas.width = Math.round(210 * 300 / 25.4);
+      tempCanvas.height = Math.round(297 * 300 / 25.4);
+      
+      const ctx = tempCanvas.getContext('2d');
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(0, 0, tempCanvas.width, tempCanvas.height);
+      ctx.imageSmoothingEnabled = true;
+      ctx.imageSmoothingQuality = 'high';
+      
+      ctx.drawImage(
+        canvas, 
+        0, 0, canvas.width, canvas.height,
+        0, 0, tempCanvas.width, tempCanvas.height
+      );
+      
+      const data = tempCanvas.toDataURL('image/jpeg', 0.98);
+      const a = document.createElement('a');
+      a.href = data;
+      a.download = `${node.dataset.reference || 'voucher'}.jpg`;
+      a.click();
+    }
+  } catch (e) {
+    console.error('دانلود ناموفق بود:', e);
+  }
+};
+
+const handlePrint = () => {
+  try {
+    const voucher = document.getElementById('voucherPreview');
+    let voucherHTML = voucher.innerHTML;
+    
+    if (els.showQr.value === 'yes') {
+      const qrCanvas = document.getElementById('qrCanvas');
+      if (qrCanvas) {
+        // ایجاد متن برای QR Code با اطلاعات تمام مسافران و پروازها
+        let qrText = '';
+        if (els.qrMode.value === 'ticket') {
+          const passengers = getPassengersData();
+          const flights = getFlightsData();
+          
+          qrText = 'Flight Voucher\n';
+          qrText += `Airline: ${els.persianName.value} (${els.englishName.value})\n`;
+          qrText += `Passengers: ${passengers.length}\n`;
+          
+          passengers.forEach((passenger, index) => {
+            qrText += `Passenger ${index+1}: ${passenger.gender} ${passenger.firstName} ${passenger.lastName} (${passenger.type})\n`;
+            qrText += `Ticket ${index+1}: ${passenger.ticketNo || 'N/A'}\n`;
+            qrText += `Reference ${index+1}: ${passenger.reference}\n`;
+          });
+          
+          qrText += `Flights: ${flights.length}\n`;
+          flights.forEach((flight, index) => {
+            qrText += `Flight ${index+1}: ${flight.flightNo} (${flight.from} to ${flight.to})\n`;
+          });
+          
+          if (els.showPrice.value === 'yes' && els.price.value) {
+            qrText += `Price: ${els.price.value}\n`;
+          }
+          
+          if (els.showBaggage.value === 'yes') {
+            qrText += `Baggage: ${els.baggageCount.value}/${els.baggageWeight.value}kg\n`;
+            qrText += `Hand Baggage: ${els.handBaggageCount.value}/${els.handBaggageWeight.value}kg\n`;
+          }
+          
+          if (els.issueDateMode.value !== 'none') {
+            const issueDateTime = els.issueDateMode.value === 'auto' ? dateUtils.getCurrentDateTime() : '';
+            if (issueDateTime) {
+              qrText += `Issue Date: ${dateUtils.formatDate(issueDateTime, 'persian', false)}/${dateUtils.formatDate(issueDateTime, 'gregorian', false)}\n`;
+            }
+          }
+        } else {
+          const passengers = getPassengersData();
+          qrText = passengers[0]?.reference || 'REF';
+        }
+        
+        new QRious({
+          element: qrCanvas,
+          value: qrText,
+          size: 130
+        });
+        
+        const qrImageData = qrCanvas.toDataURL('image/png');
+        voucherHTML = voucherHTML.replace(
+          /<canvas id="qrCanvas" class="qr"[^>]*><\/canvas>/,
+          `<img src="${qrImageData}" class="qr" alt="QR Code" style="width:130px;height:130px;border-radius:10px;border:2px solid #e2e8f0;padding:8px;background:#fff;">`
+        );
+      }
+    }
+    
+    const printWindow = window.open('', '_blank');
+    printWindow.document.write(`
+      <html dir="${voucher.getAttribute('dir')}">
+      <head>
+        <title>چاپ ووچر</title>
+        <style>
+          body { margin: 0; font-family: Arial, sans-serif; }
+          .voucher { padding: 24px; font-size: 14px; color: #1f2937; background: #ffffff; border-radius: 12px; }
+          .head { display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 16px; }
+          .airline { display: flex; align-items: center; gap: 16px; }
+          .airline img { width: 120px; height: 60px; object-fit: contain; border-radius: 8px; background: #fff; padding: 8px; border: 1px solid #e2e8f0; }
+          .flight-info { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 20px; padding: 16px; border: 2px solid #e2e8f0; border-radius: 10px; background: #f1f5f9; }
+          .field { display: grid; grid-template-columns: 150px 1fr; align-items: center; padding: 12px 0; border-bottom: 1px dashed #e2e8f0; }
+          .field:last-child { border-bottom: none; }
+          .label { font-size: 13px; color: #6b7280; font-weight: 500; }
+          .value { font-size: 14px; font-weight: 700; color: #1f2937; text-align: left; }
+          .qr { width: 130px; height: 130px; background: #fff; padding: 8px; border-radius: 10px; border: 2px solid #e2e8f0; }
+          .baggage-section { margin-top: 20px; padding: 16px; border: 2px solid #e2e8f0; border-radius: 10px; background: #fff; }
+          .baggage-section .baggage-row { 
+            display: grid; 
+            grid-template-columns: repeat(4, 1fr); 
+            gap: 12px; 
+            margin-bottom: 12px;
+          }
+          .baggage-section .baggage-field { 
+            display: flex; 
+            flex-direction: column; 
+            text-align: center;
+            padding: 8px;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            background: #f8fafc;
+          }
+          .baggage-section .baggage-label { 
+            font-size: 12px; 
+            color: #6b7280; 
+            margin-bottom: 4px;
+          }
+          .baggage-section .baggage-value { 
+            font-size: 14px; 
+            font-weight: 700; 
+            color: #1f2937;
+          }
+          .lower-section { display: flex; gap: 16px; align-items: flex-start; margin-top: 20px; }
+          .notes-section { margin: 20px 0; padding: 16px; border: 2px solid #e2e8f0; border-radius: 10px; background: #fff; }
+          .voucher-footer { margin-top: 20px; padding-top: 16px; border-top: 2px solid #e2e8f0; }
+          .issuer { display: flex; gap: 12px; align-items: center; }
+          .issuer img { width: 100px; height: 50px; object-fit: contain; border-radius: 8px; background: #fff; padding: 8px; border: 1px solid #e2e8f0; }
+          .airline-info { font-size: 13px; color: #6b7280; margin-top: 4px; }
+          @media print {
+            .voucher { border: none; box-shadow: none; }
+            .qr { display: block; }
+          }
+        </style>
+      </head>
+      <body onload="window.print();window.close()">
+        <div class="voucher">${voucherHTML}</div>
+      </body>
+      </html>
+    `);
+    printWindow.document.close();
+  } catch (e) {
+    console.error('چاپ ناموفق بود:', e);
+  }
+};
+
+const handleReset = () => {
+  try {
+    if (!confirm('همه فیلدها بازنشانی شوند؟')) return;
+    
+    document.querySelectorAll('input:not([type="hidden"]):not([type="file"]), textarea').forEach(el => {
+      if (el.type !== 'button') el.value = '';
+    });
+    
+    // تنظیم مقادیر پیش‌فرض
+    els.showIssuer.value = 'no';
+    els.showBaggage.value = 'no';
+    els.showQr.value = 'yes';
+    els.issueDateMode.value = 'auto';
+    els.datetimeCalendarType.value = 'gregorian';
+    els.showPrice.value = 'no';
+    els.selectedLogoData.value = DEFAULT_LOGO;
+    els.issuerLogoData.value = DEFAULT_ISSUER_LOGO;
+    els.editIndex.value = '-1';
+    
+    els.logoPreview.innerHTML = '';
+    els.logoPreview.classList.add('hidden');
+    els.issuerLogoPreview.innerHTML = '';
+    els.issuerLogoPreview.classList.add('hidden');
+    
+    $(els.airlineDropdown).val('').trigger('change.select2');
+    $(els.logoDropdown).val('').trigger('change.select2');
+    
+    // بازنشانی مسافران و پروازها
+    els.passengersContainer.innerHTML = '';
+    els.flightsContainer.innerHTML = '';
+    
+    // اضافه کردن مسافر و پرواز پیش‌فرض
+    addPassenger();
+    addFlight(null, null, 'outbound');
+    
+    // پاک کردن ذخیره‌سازی فرم
+    localStorage.removeItem(FORM_DATA_KEY);
+    
+    renderVoucher();
+  } catch (e) {
+    console.error('بازنشانی ناموفق بود:', e);
+  }
+};
+
+const handleGenerate = () => {
+  try {
+    renderVoucher();
+    window.scrollTo({ 
+      top: document.getElementById('voucherPreview').offsetTop, 
+      behavior: 'smooth' 
+    });
+  } catch (e) {
+    console.error('تولید ووچر ناموفق بود:', e);
+  }
+};
+
+const bindEvents = () => {
+  try {
+    // دکمه‌ها
+    document.getElementById('addLogoBtn').onclick = handleLogoAdd;
+    document.getElementById('clearLogos').onclick = handleLogoClear;
+    document.getElementById('generateBtn').onclick = handleGenerate;
+    document.getElementById('downloadBtn').onclick = handleDownload;
+    document.getElementById('printBtn').onclick = handlePrint;
+    document.getElementById('resetBtn').onclick = handleReset;
+    
+    // دکمه‌های جدید
+    els.addPassengerBtn.onclick = () => {
+      addPassenger();
+      renderVoucher();
+      formManager.save();
+    };
+    
+    els.addIntermediateFlightBtn.onclick = () => {
+      addFlight(null, null, 'intermediate');
+      renderVoucher();
+      formManager.save();
+    };
+    
+    els.addReturnFlightBtn.onclick = () => {
+      if (getReturnFlightCount() > 0) {
+        alert('فقط یک پرواز برگشت می‌توانید اضافه کنید.');
+        return;
+      }
+      addFlight(null, null, 'return');
+      renderVoucher();
+      formManager.save();
+    };
+    
+    // تغییر فایل‌ها
+    els.logoFile.onchange = handleAirlineLogoChange;
+    els.issuerLogoFile.onchange = handleIssuerLogoChange;
+    
+    // تغییر حالت‌ها
+    els.issueDateMode.onchange = handleIssueDateModeChange;
+    
+    // رندر خودکار با تغییر ورودی‌ها و ذخیره فرم
+    const inputIds = [
+      'persianName', 'englishName', 'airlineCode', 'price', 'baggageCount', 'baggageWeight', 
+      'handBaggageCount', 'handBaggageWeight', 'showBaggage', 'notes', 'showPrice', 
+      'datetimeCalendarType', 'showQr', 'qrMode', 'langSelect', 'issuerName', 'issuerPhone', 
+      'issuerEmail', 'issuerWebsite', 'issuerNotes', 'showIssuer'
+    ];
+    
+    const debouncedSaveAndRender = debounce(() => {
+      renderVoucher();
+      formManager.save();
+    }, 300);
+    
+    inputIds.forEach(id => {
+      const el = els[id];
+      if (el) {
+        el.oninput = debouncedSaveAndRender;
+        el.onchange = debouncedSaveAndRender;
+      }
+    });
+
+    // رویدادهای Select2
+    $(els.airlineDropdown).on('change', debouncedSaveAndRender);
+    $(els.logoDropdown).on('change', debouncedSaveAndRender);
+    
+  } catch (e) {
+    console.error('اتصال رویدادها ناموفق بود:', e);
+  }
+};
+
+const init = () => {
+  try {
+    logoManager.renderDropdown('airlineDropdown', true);
+    logoManager.renderDropdown('logoDropdown', false);
+    
+    // بارگذاری داده‌های ذخیره شده فرم
+    formManager.load();
+    
+    // اگر هیچ مسافری وجود ندارد، یک مسافر پیش‌فرض اضافه کن
+    if (els.passengersContainer.querySelectorAll('.passenger-section').length === 0) {
+      addPassenger();
+    }
+    
+    // اگر هیچ پروازی وجود ندارد، یک پرواز رفت پیش‌فرض اضافه کن
+    if (els.flightsContainer.querySelectorAll('.flight-segment').length === 0) {
+      addFlight(null, null, 'outbound');
+    }
+    
+    bindEvents();
+    renderVoucher();
+  } catch (e) {
+    console.error('راه‌اندازی اولیه ناموفق بود:', e);
+  }
+};
+
+window.onload = init;
+</script>
+</body>
+</html>
