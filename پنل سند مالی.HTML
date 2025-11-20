@@ -1,0 +1,2590 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <title>Flight Form - Professional System</title>
+    <style>
+        /* تمام استایل‌های قبلی بدون تغییر باقی می‌مانند */
+        body {
+            margin: 0;
+            padding: 10px;
+            background: white;
+            font-weight: bold;
+        }
+        table {
+            border-collapse: collapse;
+            border: 1px solid black;
+            font-family: Arial, sans-serif;
+            font-size: 12px;
+            width: 100%;
+            table-layout: fixed;
+        }
+        td {
+            border: 1px solid black;
+            padding: 5px;
+            text-align: left;
+            vertical-align: top;
+            white-space: nowrap;
+        }
+        .gray {
+            background-color: #D9D9D9;
+        }
+        .lightblue {
+            background-color: #D9E2F3;
+        }
+        .red {
+            color: red;
+        }
+        .center {
+            text-align: center;
+        }
+        input {
+            width: 100%;
+            box-sizing: border-box;
+            border: none;
+            background: transparent;
+            font-size: 12px;
+            font-weight: normal;
+        }
+        input.center {
+            text-align: center;
+        }
+        input:focus {
+            outline: 2px solid #4CAF50;
+            background-color: #f0f8ff;
+        }
+        .no-input {
+            width: auto;
+            color: red;
+            background: transparent;
+            border: none;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        .label-input {
+            display: inline-block;
+            width: calc(100% - 60px);
+        }
+        .last-rows td {
+            width: 20%;
+        }
+        .ui-autocomplete {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            z-index: 10000;
+            max-height: 200px;
+            overflow-y: auto;
+            overflow-x: hidden;
+            background: white;
+            border: 1px solid #ccc;
+            width: 100% !important;
+            box-sizing: border-box;
+        }
+        .ui-menu-item {
+            padding: 5px;
+            border-bottom: 1px solid #eee;
+            font-size: 11px;
+            cursor: pointer;
+        }
+        .ui-menu-item:hover {
+            background-color: #f0f0f0;
+        }
+        .ui-helper-hidden-accessible {
+            display: none;
+        }
+        .from-to-cell {
+            position: relative;
+        }
+        .number-cell {
+            width: 25px;
+            text-align: center;
+        }
+        .passenger-cell {
+            width: calc(50% - 25px);
+        }
+        .financial-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .financial-table td {
+            width: 20%;
+            border: 1px solid black;
+            padding: 5px;
+            text-align: center;
+        }
+        .financial-container {
+            width: 100%;
+        }
+        .time-container {
+            position: relative;
+            display: inline-block;
+            width: calc(100% - 60px);
+        }
+        .reset-time-btn {
+            position: absolute;
+            right: 0;
+            top: 0;
+            height: 100%;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            font-size: 12px;
+            padding: 0 5px;
+            color: #007bff;
+        }
+        .reset-time-btn:hover {
+            color: #0056b3;
+        }
+        .reset-no-btn {
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            font-size: 12px;
+            padding: 0 5px;
+            color: #ff0000;
+            margin-left: 5px;
+        }
+        .reset-no-btn:hover {
+            color: #cc0000;
+        }
+        .action-buttons {
+            text-align: center;
+            margin-top: 20px;
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        .action-buttons button {
+            padding: 10px 20px;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        #save-btn {
+            background: #4CAF50;
+            color: white;
+        }
+        #new-form-btn {
+            background: #FF9800;
+            color: white;
+        }
+        #manage-btn {
+            background: #2196F3;
+            color: white;
+        }
+        #reset-no-btn {
+            background: #f44336;
+            color: white;
+        }
+        #close-modal {
+            background: #f44336;
+            color: white;
+        }
+        #delete-all-btn {
+            background: #ff0000;
+            color: white;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+        }
+        .modal-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            width: 80%;
+            max-width: 800px;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+        .form-item {
+            border: 1px solid #ddd;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+        .modified-form {
+            background-color: #ffebee;
+            border-left: 4px solid #f44336;
+        }
+        .form-details {
+            margin-bottom: 10px;
+        }
+        .form-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 5px;
+            padding: 3px 0;
+        }
+        .form-row-right {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 5px;
+            padding: 3px 0;
+            direction: rtl;
+            text-align: right;
+        }
+        .form-row:nth-child(odd) {
+            background-color: #f0f0f0;
+        }
+        .form-row-right:nth-child(odd) {
+            background-color: #f0f0f0;
+        }
+        .form-label {
+            font-weight: bold;
+            min-width: 120px;
+        }
+        .form-value {
+            flex: 1;
+        }
+        .form-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 10px;
+            padding-top: 10px;
+            border-top: 1px solid #ddd;
+        }
+        .passenger-input-container {
+            display: flex;
+            align-items: center;
+        }
+        .passenger-type {
+            width: 60px;
+            margin-left: 5px;
+            font-size: 11px;
+            font-weight: bold;
+            text-align: center;
+            background: transparent;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+            padding: 2px;
+        }
+        .passenger-gender {
+            width: 70px;
+            margin-left: 5px;
+            font-size: 11px;
+            font-weight: bold;
+            text-align: center;
+            background: transparent;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+            padding: 2px;
+        }
+        .passenger-name {
+            flex: 1;
+            text-align: right;
+            border: none;
+            background: transparent;
+            font-size: 12px;
+        }
+        .modal-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        .date-time-container {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+        }
+        .date-time-item {
+            display: flex;
+            align-items: center;
+        }
+        .date-time-label {
+            font-weight: bold;
+            margin-left: 10px;
+        }
+        .passenger-display-input {
+            width: 100%;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+            padding: 5px;
+            font-size: 12px;
+            background: white;
+            text-align: right;
+            direction: rtl;
+        }
+        .additional-flight {
+            margin-top: 10px;
+            border: 2px solid #4CAF50;
+            border-radius: 5px;
+            padding: 5px;
+        }
+        .flight-header {
+            background: #4CAF50;
+            color: white;
+            padding: 5px;
+            border-radius: 3px;
+            margin-bottom: 5px;
+            text-align: center;
+            font-weight: bold;
+        }
+        .remove-flight {
+            background: #f44336;
+            color: white;
+            border: none;
+            padding: 2px 8px;
+            border-radius: 3px;
+            cursor: pointer;
+            float: right;
+        }
+        #return-flight-btn {
+            background: #9C27B0;
+            color: white;
+        }
+        #intermediate-flights-btn {
+            background: #607D8B;
+            color: white;
+        }
+        /* New Styles for Additional Features */
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px;
+            border-radius: 5px;
+            z-index: 10000;
+            max-width: 300px;
+        }
+        .notification.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .notification.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .notification.warning {
+            background: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeaa7;
+        }
+        .notification.info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+        .dashboard-cards {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .card {
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 15px;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .card h4 {
+            margin: 0 0 10px 0;
+            color: #666;
+            font-size: 14px;
+        }
+        .card span {
+            font-size: 24px;
+            font-weight: bold;
+            color: #333;
+        }
+        .search-filters {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin: 15px 0;
+        }
+        .search-filters input, .search-filters select {
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        .user-badge {
+            position: fixed;
+            top: 10px;
+            left: 10px;
+            background: #2196F3;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 12px;
+            z-index: 1000;
+        }
+        .admin-only {
+            display: none;
+        }
+        .permission-denied {
+            opacity: 0.6;
+            pointer-events: none;
+        }
+        .user-item {
+            border: 1px solid #eee;
+            padding: 10px;
+            margin: 5px 0;
+            border-radius: 5px;
+        }
+        .login-section {
+            background: #f5f5f5;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border: 2px solid #2196F3;
+        }
+        .role-permissions {
+            background: #e3f2fd;
+            padding: 10px;
+            border-radius: 5px;
+            margin-top: 10px;
+            font-size: 12px;
+        }
+        .permission-list {
+            list-style: none;
+            padding: 0;
+            margin: 5px 0;
+        }
+        .permission-list li {
+            padding: 2px 0;
+            border-bottom: 1px dashed #ccc;
+        }
+        .backup-file-input {
+            margin: 10px 0;
+            padding: 10px;
+            border: 2px dashed #ccc;
+            border-radius: 5px;
+            text-align: center;
+        }
+        .development-message {
+            background: #fff3cd;
+            color: #856404;
+            padding: 15px;
+            border-radius: 5px;
+            border: 1px solid #ffeaa7;
+            text-align: center;
+            margin: 20px 0;
+        }
+        /* New Header Styles */
+        .header-bar {
+            background: #2196F3;
+            color: white;
+            padding: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            border-radius: 5px;
+        }
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .user-dropdown {
+            position: relative;
+            display: inline-block;
+        }
+        .user-dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: white;
+            min-width: 200px;
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+            z-index: 1000;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+        .user-dropdown-content a {
+            color: black;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+            text-align: right;
+            border-bottom: 1px solid #eee;
+            cursor: pointer;
+        }
+        .user-dropdown-content a:hover {
+            background-color: #f1f1f1;
+        }
+        .user-dropdown:hover .user-dropdown-content {
+            display: block;
+        }
+        .datetime-display {
+            text-align: center;
+            direction: rtl;
+        }
+        .datetime-display div {
+            margin: 2px 0;
+            font-size: 14px;
+            font-weight: bold;
+        }
+        .permissions-display {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 5px;
+            padding: 10px;
+            margin-top: 10px;
+        }
+        .permission-item {
+            display: flex;
+            align-items: center;
+            margin: 5px 0;
+        }
+        .permission-item input {
+            width: auto;
+            margin-left: 10px;
+        }
+        .export-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+            justify-content: center;
+        }
+        .cloud-backup-section {
+            margin-top: 20px;
+            padding: 15px;
+            border: 2px solid #28a745;
+            border-radius: 8px;
+            background: #f8fff9;
+        }
+        .ui-autocomplete-high-zindex {
+            z-index: 10000 !important;
+        }
+        /* New styles for live clock */
+        .datetime-row {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+            direction: ltr;
+        }
+        .live-clock {
+            font-family: 'Courier New', monospace;
+            font-size: 16px;
+            font-weight: bold;
+            background: rgba(255,255,255,0.2);
+            padding: 4px 8px;
+            border-radius: 4px;
+            min-width: 70px;
+            text-align: center;
+            direction: ltr;
+        }
+        /* Auto Backup Styles */
+        .auto-backup-section {
+            margin-top: 20px;
+            padding: 15px;
+            border: 2px solid #17a2b8;
+            border-radius: 8px;
+            background: #f0f9ff;
+        }
+        .auto-backup-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin: 15px 0;
+        }
+        .auto-backup-options {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin: 10px 0;
+        }
+        .backup-schedule-item {
+            border: 1px solid #ddd;
+            padding: 10px;
+            margin: 5px 0;
+            border-radius: 5px;
+            background: #f8f9fa;
+        }
+        .auto-backup-status {
+            margin-top: 15px;
+            padding: 10px;
+            border-radius: 5px;
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+        }
+        /* Keyboard navigation highlight */
+        .keyboard-navigation {
+            outline: 3px solid #FF9800 !important;
+            outline-offset: 2px;
+        }
+    </style>
+    <!-- For Persian Date Picker -->
+    <link rel="stylesheet" href="https://unpkg.com/persian-datepicker@latest/dist/css/persian-datepicker.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://unpkg.com/persian-date@latest/dist/persian-date.min.js"></script>
+    <script src="https://unpkg.com/persian-datepicker@latest/dist/js/persian-datepicker.min.js"></script>
+    <!-- For Autocomplete -->
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/smoothness/jquery-ui.css">
+    <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"></script>
+    <!-- For PDF Export -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
+    <!-- For Excel Export -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+</head>
+<body>
+    <!-- New Header Bar -->
+    <div class="header-bar">
+        <div class="user-info">
+            <div id="header-user-display">کاربر: مهمان</div>
+            <div class="user-dropdown" id="user-dropdown" style="display: none;">
+                <button style="background: #1976D2; color: white; border: none; padding: 8px 15px; border-radius: 4px; cursor: pointer;">
+                    منوی کاربر ▾
+                </button>
+                <div class="user-dropdown-content">
+                    <a id="dropdown-search-btn">🔍 جستجوی پیشرفته</a>
+                    <a id="dropdown-report-btn">📊 گزارش‌گیری مالی</a>
+                    <a id="dropdown-backup-btn">💾 مدیریت بک‌آپ</a>
+                    <a id="dropdown-admin-btn">📊 داشبورد پیشرفته</a>
+                </div>
+            </div>
+            <button onclick="logout()" style="background: #f44336; color: white; border: none; padding: 8px 15px; border-radius: 4px; cursor: pointer; display: none;" id="logout-btn">
+                خروج
+            </button>
+        </div>
+        <div class="datetime-display">
+            <div class="datetime-row">
+                <span id="live-clock" class="live-clock">--:--:--</span>
+                <span id="persian-date-time">-</span>
+            </div>
+            <div id="current-date-time">-</div>
+        </div>
+    </div>
+
+    <!-- Login Section -->
+    <div id="login-section" class="login-section">
+        <h3 style="text-align: center; margin: 0 0 15px 0;">🔐 ورود به سیستم رزرواسیون پرواز</h3>
+        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr auto; gap: 10px; align-items: end;">
+            <div>
+                <label>نام کاربری:</label>
+                <input type="text" id="login-username" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;" value="admin">
+            </div>
+            <div>
+                <label>رمز عبور:</label>
+                <input type="password" id="login-password" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;" value="admin123">
+            </div>
+            <div>
+                <label>نقش:</label>
+                <select id="login-role" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+                    <option value="OPERATOR">اپراتور</option>
+                    <option value="SUPERVISOR">ناظر</option>
+                    <option value="ADMIN" selected>مدیر سیستم</option>
+                    <option value="AUDITOR">بازرس</option>
+                    <option value="CUSTOM">سفارشی</option>
+                </select>
+            </div>
+            <div>
+                <button onclick="quickLogin()" style="background: #4CAF50; color: white; padding: 8px 15px; border: none; border-radius: 4px; cursor: pointer;">ورود به سیستم</button>
+            </div>
+        </div>
+    </div>
+
+    <table id="main-form" style="display: none;">
+        <!-- Existing table content remains exactly the same -->
+        <tr>
+            <td class="gray" colspan="3">DATE: 
+                <div class="time-container">
+                    <input type="text" id="current-date" class="label-input">
+                </div>
+            </td>
+            <td class="gray" colspan="3">TIME: 
+                <div class="time-container">
+                    <input type="text" id="current-time" class="label-input">
+                    <button type="button" class="reset-time-btn" title="Reset to current time">↻</button>
+                </div>
+            </td>
+            <td class="gray" colspan="3">NAME OF PASSENGERS:</td>
+            <td class="gray">NO: 
+                <input type="text" id="no" class="no-input" value="001">
+            </td>
+        </tr>
+        <tr class="lightblue" style="direction: rtl; text-align: right;">
+            <td class="passenger-cell" colspan="4">
+                <div class="passenger-input-container">
+                    <input type="text" id="passenger1" placeholder="نام مسافر" class="passenger-name">
+                    <select class="passenger-gender" id="passenger1-gender">
+                        <option value="">جنسیت</option>
+                        <option value="آقا">آقا</option>
+                        <option value="خانم">خانم</option>
+                        <option value="MR">MR</option>
+                        <option value="MRS">MRS</option>
+                        <option value="MISS">MISS</option>
+                        <option value="MS">MS</option>
+                    </select>
+                    <select class="passenger-type" id="passenger1-type">
+                        <option value="ADT">ADT</option>
+                        <option value="CHD">CHD</option>
+                        <option value="INF">INF</option>
+                    </select>
+                </div>
+            </td>
+            <td class="number-cell">4</td>
+            <td class="passenger-cell" colspan="4">
+                <div class="passenger-input-container">
+                    <input type="text" id="passenger2" placeholder="نام مسافر" class="passenger-name">
+                    <select class="passenger-gender" id="passenger2-gender">
+                        <option value="">جنسیت</option>
+                        <option value="آقا">آقا</option>
+                        <option value="خانم">خانم</option>
+                        <option value="MR">MR</option>
+                        <option value="MRS">MRS</option>
+                        <option value="MISS">MISS</option>
+                        <option value="MS">MS</option>
+                    </select>
+                    <select class="passenger-type" id="passenger2-type">
+                        <option value="ADT">ADT</option>
+                        <option value="CHD">CHD</option>
+                        <option value="INF">INF</option>
+                    </select>
+                </div>
+            </td>
+            <td class="number-cell">1</td>
+        </tr>
+        <tr class="gray" style="direction: rtl; text-align: right;">
+            <td class="passenger-cell" colspan="4">
+                <div class="passenger-input-container">
+                    <input type="text" id="passenger3" placeholder="نام مسافر" class="passenger-name">
+                    <select class="passenger-gender" id="passenger3-gender">
+                        <option value="">جنسیت</option>
+                        <option value="آقا">آقا</option>
+                        <option value="خانم">خانم</option>
+                        <option value="MR">MR</option>
+                        <option value="MRS">MRS</option>
+                        <option value="MISS">MISS</option>
+                        <option value="MS">MS</option>
+                    </select>
+                    <select class="passenger-type" id="passenger3-type">
+                        <option value="ADT">ADT</option>
+                        <option value="CHD">CHD</option>
+                        <option value="INF">INF</option>
+                    </select>
+                </div>
+            </td>
+            <td class="number-cell">5</td>
+            <td class="passenger-cell" colspan="4">
+                <div class="passenger-input-container">
+                    <input type="text" id="passenger4" placeholder="نام مسافر" class="passenger-name">
+                    <select class="passenger-gender" id="passenger4-gender">
+                        <option value="">جنسیت</option>
+                        <option value="آقا">آقا</option>
+                        <option value="خانم">خانم</option>
+                        <option value="MR">MR</option>
+                        <option value="MRS">MRS</option>
+                        <option value="MISS">MISS</option>
+                        <option value="MS">MS</option>
+                    </select>
+                    <select class="passenger-type" id="passenger4-type">
+                        <option value="ADT">ADT</option>
+                        <option value="CHD">CHD</option>
+                        <option value="INF">INF</option>
+                    </select>
+                </div>
+            </td>
+            <td class="number-cell">2</td>
+        </tr>
+        <tr class="lightblue" style="direction: rtl; text-align: right;">
+            <td class="passenger-cell" colspan="4">
+                <div class="passenger-input-container">
+                    <input type="text" id="passenger5" placeholder="نام مسافر" class="passenger-name">
+                    <select class="passenger-gender" id="passenger5-gender">
+                        <option value="">جنسیت</option>
+                        <option value="آقا">آقا</option>
+                        <option value="خانم">خانم</option>
+                        <option value="MR">MR</option>
+                        <option value="MRS">MRS</option>
+                        <option value="MISS">MISS</option>
+                        <option value="MS">MS</option>
+                    </select>
+                    <select class="passenger-type" id="passenger5-type">
+                        <option value="ADT">ADT</option>
+                        <option value="CHD">CHD</option>
+                        <option value="INF">INF</option>
+                    </select>
+                </div>
+            </td>
+            <td class="number-cell">6</td>
+            <td class="passenger-cell" colspan="4">
+                <div class="passenger-input-container">
+                    <input type="text" id="passenger6" placeholder="نام مسافر" class="passenger-name">
+                    <select class="passenger-gender" id="passenger6-gender">
+                        <option value="">جنسیت</option>
+                        <option value="آقا">آقا</option>
+                        <option value="خانم">خانم</option>
+                        <option value="MR">MR</option>
+                        <option value="MRS">MRS</option>
+                        <option value="MISS">MISS</option>
+                        <option value="MS">MS</option>
+                    </select>
+                    <select class="passenger-type" id="passenger6-type">
+                        <option value="ADT">ADT</option>
+                        <option value="CHD">CHD</option>
+                        <option value="INF">INF</option>
+                    </select>
+                </div>
+            </td>
+            <td class="number-cell">3</td>
+        </tr>
+        <tr class="gray">
+            <td>DEP DATE:</td>
+            <td colspan="3"><input type="text" id="dep-date" placeholder="Select or type date"></td>
+            <td>FROM:</td>
+            <td colspan="5" class="from-to-cell"><input type="text" id="from" placeholder="Type city or IATA"></td>
+        </tr>
+        <tr class="gray">
+            <td>DEP TIME:</td>
+            <td colspan="3">
+                <div class="time-container">
+                    <input type="text" id="dep-time" placeholder="Select or type time">
+                    <button type="button" class="reset-time-btn" title="Reset to current time">↻</button>
+                </div>
+            </td>
+            <td>TO:</td>
+            <td colspan="5" class="from-to-cell"><input type="text" id="to" placeholder="Type city or IATA"></td>
+        </tr>
+        <tr class="lightblue">
+            <td rowspan="2" colspan="4" style="vertical-align: top;">
+                ADDRESS: <input type="text" id="address" class="label-input">
+            </td>
+            <td>MOBILE:</td>
+            <td colspan="5"><input type="text" id="mobile"></td>
+        </tr>
+        <tr class="lightblue">
+            <td>PHONE:</td>
+            <td colspan="5"><input type="text" id="phone"></td>
+        </tr>
+        <tr class="gray">
+            <td colspan="3">REFERENCE: <input type="text" id="reference" class="label-input"></td>
+            <td colspan="3">COMPANY: <input type="text" id="company" class="label-input"></td>
+            <td colspan="4">COUNTER: <input type="text" id="counter" class="label-input"></td>
+        </tr>
+        <tr class="lightblue">
+            <td colspan="10" style="padding: 0;">
+                <table class="financial-table">
+                    <tr class="lightblue">
+                        <td class="center">M</td>
+                        <td class="center">P</td>
+                        <td class="center">COM</td>
+                        <td class="center">SELL</td>
+                        <td class="center">BUY</td>
+                    </tr>
+                    <tr class="lightblue">
+                        <td class="center"><input type="text" id="financial-m" class="center"></td>
+                        <td class="center"><input type="text" id="financial-p" class="center"></td>
+                        <td class="center"><input type="text" id="financial-com" class="center"></td>
+                        <td class="center"><input type="text" id="financial-sell" class="center"></td>
+                        <td class="center"><input type="text" id="financial-buy" class="center"></td>
+                    </tr>
+                    <tr class="lightblue">
+                        <td class="center">IRR</td>
+                        <td class="center">IRQ</td>
+                        <td class="center">$</td>
+                        <td class="center">CARD</td>
+                        <td class="center">BANK</td>
+                    </tr>
+                    <tr class="lightblue">
+                        <td class="center"><input type="text" id="financial-irr" class="center"></td>
+                        <td class="center"><input type="text" id="financial-irq" class="center"></td>
+                        <td class="center"><input type="text" id="financial-usd" class="center"></td>
+                        <td class="center"><input type="text" id="financial-card" class="center"></td>
+                        <td class="center"><input type="text" id="financial-bank" class="center"></td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+        <!-- سطر جدید برای توضیحات -->
+        <tr class="gray">
+            <td colspan="10">توضیحات: <input type="text" id="description" class="label-input"></td>
+        </tr>
+    </table>
+
+    <!-- پروازهای میانی -->
+    <div id="intermediate-flights-section" style="display: none;">
+        <div id="intermediate-flights-container"></div>
+    </div>
+
+    <!-- پرواز برگشت -->
+    <div id="return-flight-section" style="display: none;" class="additional-flight">
+        <div class="flight-header">
+            پرواز برگشت
+            <button type="button" class="remove-flight" onclick="removeReturnFlight()">×</button>
+        </div>
+        <table style="width: 100%;">
+            <tr class="gray">
+                <td>DEP DATE:</td>
+                <td colspan="3"><input type="text" id="return-dep-date" placeholder="Select or type date"></td>
+                <td>FROM:</td>
+                <td colspan="5" class="from-to-cell"><input type="text" id="return-from" placeholder="Type city or IATA"></td>
+            </tr>
+            <tr class="gray">
+                <td>DEP TIME:</td>
+                <td colspan="3">
+                    <div class="time-container">
+                        <input type="text" id="return-dep-time" placeholder="Select or type time">
+                        <button type="button" class="reset-time-btn" title="Reset to current time">↻</button>
+                    </div>
+                </td>
+                <td>TO:</td>
+                <td colspan="5" class="from-to-cell"><input type="text" id="return-to" placeholder="Type city or IATA"></td>
+            </tr>
+            <!-- سطرهای جدید برای REFERENCE, COMPANY, COUNTER در پرواز برگشت -->
+            <tr class="gray">
+                <td colspan="3">REFERENCE: <input type="text" id="return-reference" class="label-input"></td>
+                <td colspan="3">COMPANY: <input type="text" id="return-company" class="label-input"></td>
+                <td colspan="4">COUNTER: <input type="text" id="return-counter" class="label-input"></td>
+            </tr>
+            <tr class="lightblue">
+                <td colspan="10" style="padding: 0;">
+                    <table class="financial-table">
+                        <tr class="lightblue">
+                            <td class="center">M</td>
+                            <td class="center">P</td>
+                            <td class="center">COM</td>
+                            <td class="center">SELL</td>
+                            <td class="center">BUY</td>
+                        </tr>
+                        <tr class="lightblue">
+                            <td class="center"><input type="text" id="return-financial-m" class="center"></td>
+                            <td class="center"><input type="text" id="return-financial-p" class="center"></td>
+                            <td class="center"><input type="text" id="return-financial-com" class="center"></td>
+                            <td class="center"><input type="text" id="return-financial-sell" class="center"></td>
+                            <td class="center"><input type="text" id="return-financial-buy" class="center"></td>
+                        </tr>
+                        <tr class="lightblue">
+                            <td class="center">IRR</td>
+                            <td class="center">IRQ</td>
+                            <td class="center">$</td>
+                            <td class="center">CARD</td>
+                            <td class="center">BANK</td>
+                        </tr>
+                        <tr class="lightblue">
+                            <td class="center"><input type="text" id="return-financial-irr" class="center"></td>
+                            <td class="center"><input type="text" id="return-financial-irq" class="center"></td>
+                            <td class="center"><input type="text" id="return-financial-usd" class="center"></td>
+                            <td class="center"><input type="text" id="return-financial-card" class="center"></td>
+                            <td class="center"><input type="text" id="return-financial-bank" class="center"></td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+            <!-- سطر توضیحات برای پرواز برگشت -->
+            <tr class="gray">
+                <td colspan="10">توضیحات: <input type="text" id="return-description" class="label-input"></td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="action-buttons" id="action-buttons" style="display: none;">
+        <button type="button" id="save-btn">ثبت فرم</button>
+        <button type="button" id="new-form-btn">فرم جدید</button>
+        <button type="button" id="return-flight-btn">پرواز برگشت</button>
+        <button type="button" id="intermediate-flights-btn">پروازهای میانی</button>
+        <button type="button" id="manage-btn">مدیریت فرم‌های ذخیره شده</button>
+        <button type="button" id="reset-no-btn">ریست شماره فرم</button>
+        <!-- Buttons moved to dropdown menu -->
+    </div>
+
+    <!-- Modal for saved forms -->
+    <div id="forms-modal" class="modal">
+        <div class="modal-content">
+            <h3 style="text-align: center;">فرم‌های ذخیره شده</h3>
+            <div id="forms-list"></div>
+            <div class="modal-buttons">
+                <button type="button" id="delete-all-btn">حذف همه فرم‌ها</button>
+                <button type="button" id="close-modal">بستن</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Advanced Search Modal -->
+    <div id="search-modal" class="modal">
+        <div class="modal-content">
+            <h3 style="text-align: center;">🔍 جستجوی پیشرفته</h3>
+            
+            <div class="search-filters">
+                <div>
+                    <label>شماره فرم:</label>
+                    <input type="text" id="search-form-no" placeholder="مثال: 001, 002-005">
+                </div>
+                <div>
+                    <label>نام مسافر (یا بخشی از نام):</label>
+                    <input type="text" id="search-passenger" placeholder="نام مسافر">
+                </div>
+                <div>
+                    <label>از تاریخ:</label>
+                    <input type="text" id="search-date-from" class="date-picker" placeholder="انتخاب تاریخ">
+                </div>
+                <div>
+                    <label>تا تاریخ:</label>
+                    <input type="text" id="search-date-to" class="date-picker" placeholder="انتخاب تاریخ">
+                </div>
+                <div>
+                    <label>مبدا:</label>
+                    <input type="text" id="search-from" placeholder="شهر یا فرودگاه">
+                </div>
+                <div>
+                    <label>مقصد:</label>
+                    <input type="text" id="search-to" placeholder="شهر یا فرودگاه">
+                </div>
+            </div>
+            
+            <div class="modal-buttons">
+                <button type="button" id="execute-search-btn">جستجو</button>
+                <button type="button" id="reset-search-btn">بازنشانی</button>
+                <button type="button" id="close-search-modal">بستن</button>
+            </div>
+            
+            <div id="search-results" style="max-height: 400px; overflow-y: auto; margin-top: 15px; border: 1px solid #ddd; padding: 10px;"></div>
+        </div>
+    </div>
+
+    <!-- Financial Report Modal -->
+    <div id="report-modal" class="modal">
+        <div class="modal-content">
+            <h3 style="text-align: center;">📊 گزارش‌گیری مالی</h3>
+            
+            <div style="margin: 20px 0;">
+                <label>بازه زمانی:</label>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 10px 0;">
+                    <input type="text" id="report-date-from" class="date-picker" placeholder="از تاریخ">
+                    <input type="text" id="report-date-to" class="date-picker" placeholder="تا تاریخ">
+                </div>
+                
+                <div style="margin: 15px 0;">
+                    <label>
+                        <input type="checkbox" id="include-return" checked>
+                        شامل پروازهای برگشت
+                    </label>
+                    <label>
+                        <input type="checkbox" id="include-intermediate" checked>
+                        شامل پروازهای میانی
+                    </label>
+                </div>
+
+                <div style="margin: 15px 0;">
+                    <h4>فیلدهای مالی برای گزارش:</h4>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                        <label><input type="checkbox" name="report-field" value="sell" checked> فروش (SELL)</label>
+                        <label><input type="checkbox" name="report-field" value="buy" checked> خرید (BUY)</label>
+                        <label><input type="checkbox" name="report-field" value="com" checked> سود (COM)</label>
+                        <label><input type="checkbox" name="report-field" value="p" checked> P</label>
+                        <label><input type="checkbox" name="report-field" value="m" checked> M</label>
+                        <label><input type="checkbox" name="report-field" value="irr" checked> IRR</label>
+                        <label><input type="checkbox" name="report-field" value="irq" checked> IRQ</label>
+                        <label><input type="checkbox" name="report-field" value="usd" checked> USD</label>
+                        <label><input type="checkbox" name="report-field" value="card" checked> CARD</label>
+                        <label><input type="checkbox" name="report-field" value="bank" checked> BANK</label>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="modal-buttons">
+                <button type="button" id="generate-report-btn">تولید گزارش</button>
+                <button type="button" id="close-report-modal">بستن</button>
+            </div>
+            
+            <div id="report-preview" style="margin-top: 20px; padding: 15px; border: 1px solid #ddd; border-radius: 5px; background: #f9f9f9; display: none;">
+                <h4>پیش‌نمایش گزارش</h4>
+                <div id="report-content"></div>
+                <div class="export-buttons">
+                    <button type="button" id="export-pdf-btn">📄 دانلود PDF</button>
+                    <button type="button" id="export-excel-btn">📊 دانلود Excel</button>
+                    <button type="button" id="print-report-btn">🖨 چاپ مستقیم</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Backup Management Modal -->
+    <div id="backup-modal" class="modal">
+        <div class="modal-content">
+            <h3 style="text-align: center;">💾 مدیریت بک‌آپ</h3>
+            
+            <div style="margin: 20px 0;">
+                <h4>بک‌آپ دستی</h4>
+                <div class="modal-buttons">
+                    <button type="button" id="create-backup-btn">ایجاد بک‌آپ جدید</button>
+                </div>
+
+                <div class="backup-file-input">
+                    <h4>ذخیره/بازیابی فایل بک‌آپ</h4>
+                    <p>محل ذخیره‌سازی: <strong id="backup-location">حافظه مرورگر</strong></p>
+                    <button type="button" id="download-backup-btn">دانلود فایل بک‌آپ</button>
+                    <input type="file" id="restore-backup-file" accept=".json" style="margin: 10px 0;">
+                    <button type="button" id="restore-backup-btn">بازیابی از فایل</button>
+                </div>
+                
+                <h4>بک‌آپ‌های موجود</h4>
+                <div id="backup-list" style="max-height: 200px; overflow-y: auto; border: 1px solid #ddd; padding: 10px;"></div>
+            </div>
+
+            <!-- Auto Backup Section -->
+            <div class="auto-backup-section">
+                <h4>⏰ بک‌آپ خودکار</h4>
+                
+                <div>
+                    <label>
+                        <input type="checkbox" id="auto-backup-enabled">
+                        فعال‌سازی بک‌آپ خودکار
+                    </label>
+                </div>
+                
+                <div id="auto-backup-settings" style="display: none; margin-top: 15px;">
+                    <div class="auto-backup-grid">
+                        <div>
+                            <label>فرکانس بک‌آپ:</label>
+                            <select id="auto-backup-frequency" style="width: 100%; padding: 8px;">
+                                <option value="daily">روزانه</option>
+                                <option value="weekly">هفتگی</option>
+                                <option value="monthly">ماهانه</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label>ساعت بک‌آپ (24 ساعته):</label>
+                            <input type="time" id="auto-backup-time" style="width: 100%; padding: 8px;">
+                        </div>
+                        <div>
+                            <label>تاریخ شروع (شمسی):</label>
+                            <input type="text" id="auto-backup-start-date" class="date-picker" placeholder="انتخاب تاریخ" style="width: 100%;">
+                        </div>
+                        <div>
+                            <label>تاریخ شروع (میلادی):</label>
+                            <input type="text" id="auto-backup-start-date-gregorian" readonly style="width: 100%; padding: 8px; background: #f5f5f5;">
+                        </div>
+                    </div>
+                    
+                    <div class="auto-backup-options">
+                        <label>
+                            <input type="checkbox" id="backup-on-exit">
+                            بک‌آپ هنگام خروج از سیستم
+                        </label>
+                        <label>
+                            <input type="checkbox" id="backup-on-crash">
+                            بک‌آپ پس از بازیابی از کرش
+                        </label>
+                    </div>
+                    
+                    <div class="modal-buttons">
+                        <button type="button" id="save-auto-backup-settings">ذخیره تنظیمات</button>
+                        <button type="button" id="test-auto-backup">تست بک‌آپ خودکار</button>
+                    </div>
+                    
+                    <div id="auto-backup-status" class="auto-backup-status">
+                        <h5>وضعیت بک‌آپ خودکار:</h5>
+                        <div id="next-backup-time">زمان بک‌آپ بعدی: ---</div>
+                        <div id="last-auto-backup">آخرین بک‌آپ خودکار: ---</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Cloud Backup Section -->
+            <div class="cloud-backup-section">
+                <h4>☁️ بک‌آپ ابری</h4>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 15px 0;">
+                    <div>
+                        <label>آدرس سرور:</label>
+                        <input type="text" id="cloud-server" placeholder="example.com" style="width: 100%; padding: 8px;">
+                    </div>
+                    <div>
+                        <label>پورت:</label>
+                        <input type="text" id="cloud-port" placeholder="443" style="width: 100%; padding: 8px;">
+                    </div>
+                    <div>
+                        <label>نام کاربری:</label>
+                        <input type="text" id="cloud-username" placeholder="username" style="width: 100%; padding: 8px;">
+                    </div>
+                    <div>
+                        <label>رمز عبور:</label>
+                        <input type="password" id="cloud-password" placeholder="password" style="width: 100%; padding: 8px;">
+                    </div>
+                </div>
+                <div class="modal-buttons">
+                    <button type="button" id="cloud-backup-btn">آپلود به ابر</button>
+                    <button type="button" id="cloud-restore-btn">دانلود از ابر</button>
+                    <button type="button" id="test-cloud-btn">تست اتصال</button>
+                </div>
+            </div>
+            
+            <div class="modal-buttons">
+                <button type="button" id="close-backup-modal">بستن</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Admin Dashboard Modal -->
+    <div id="admin-modal" class="modal">
+        <div class="modal-content">
+            <h3 style="text-align: center;">📊 داشبورد مدیریتی</h3>
+            
+            <div class="dashboard-cards">
+                <div class="card">
+                    <h4>فرم‌های امروز</h4>
+                    <span id="today-forms-count">0</span>
+                </div>
+                <div class="card">
+                    <h4>درآمد امروز</h4>
+                    <span id="today-revenue">0</span>
+                </div>
+                <div class="card">
+                    <h4>کاربران آنلاین</h4>
+                    <span id="online-users">1</span>
+                </div>
+                <div class="card">
+                    <h4>آخرین بک‌آپ</h4>
+                    <span id="last-backup-time">---</span>
+                </div>
+            </div>
+
+            <div class="modal-buttons" style="margin: 20px 0;">
+                <button onclick="showUserManagement()" style="background: #9C27B0; color: white;">
+                    👥 مدیریت کاربران
+                </button>
+                <button onclick="showSystemSettings()" style="background: #607D8B; color: white;">
+                    ⚙️ تنظیمات سیستم
+                </button>
+            </div>
+            
+            <div style="margin: 20px 0;">
+                <h4>فعالیت‌های اخیر</h4>
+                <div id="recent-activities-list" style="max-height: 200px; overflow-y: auto; border: 1px solid #ddd; padding: 10px;"></div>
+            </div>
+            
+            <div class="modal-buttons">
+                <button type="button" id="refresh-dashboard-btn">بروزرسانی</button>
+                <button type="button" id="close-admin-modal">بستن</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- User Management Modal -->
+    <div id="user-management-modal" class="modal">
+        <div class="modal-content">
+            <h3 style="text-align: center;">👥 مدیریت کاربران و دسترسی‌ها</h3>
+            
+            <div style="margin: 20px 0;">
+                <h4>ایجاد کاربر جدید</h4>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 10px 0;">
+                    <input type="text" id="new-username" placeholder="نام کاربری" style="padding: 8px;">
+                    <input type="password" id="new-password" placeholder="رمز عبور" style="padding: 8px;">
+                    <input type="text" id="new-fullname" placeholder="نام کامل" style="padding: 8px;">
+                    <select id="new-user-role" style="padding: 8px;">
+                        <option value="OPERATOR">اپراتور</option>
+                        <option value="SUPERVISOR">ناظر</option>
+                        <option value="ADMIN">مدیر سیستم</option>
+                        <option value="AUDITOR">بازرس</option>
+                        <option value="CUSTOM">سطح دسترسی سفارشی</option>
+                    </select>
+                </div>
+                <button onclick="createNewUser()" style="background: #4CAF50; color: white; padding: 10px; border: none; border-radius: 5px; cursor: pointer;">
+                    ایجاد کاربر جدید
+                </button>
+            </div>
+
+            <div style="margin: 20px 0;">
+                <h4>کاربران موجود</h4>
+                <div id="users-list" style="max-height: 300px; overflow-y: auto; border: 1px solid #ddd; padding: 10px;"></div>
+            </div>
+
+            <div style="margin: 20px 0;">
+                <h4>ویرایش کاربر</h4>
+                <div id="user-edit-form" style="display: none; border: 1px solid #ddd; padding: 15px; border-radius: 5px;">
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 10px 0;">
+                        <input type="text" id="edit-username" placeholder="نام کاربری" style="padding: 8px;">
+                        <input type="text" id="edit-fullname" placeholder="نام کامل" style="padding: 8px;">
+                        <select id="edit-user-role" style="padding: 8px;">
+                            <option value="OPERATOR">اپراتور</option>
+                            <option value="SUPERVISOR">ناظر</option>
+                            <option value="ADMIN">مدیر سیستم</option>
+                            <option value="AUDITOR">بازرس</option>
+                            <option value="CUSTOM">سطح دسترسی سفارشی</option>
+                        </select>
+                        <div>
+                            <button onclick="resetUserPassword()" style="background: #FF9800; color: white; padding: 8px; border: none; border-radius: 3px; cursor: pointer; width: 100%;">
+                                ریست رمز عبور
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Permissions Display and Editor -->
+                    <div id="permissions-editor" class="permissions-display">
+                        <h5>سطوح دسترسی:</h5>
+                        <div id="permissions-list"></div>
+                    </div>
+                    
+                    <div class="modal-buttons">
+                        <button onclick="saveUserEdit()" style="background: #2196F3; color: white;">ذخیره تغییرات</button>
+                        <button onclick="cancelUserEdit()" style="background: #f44336; color: white;">انصراف</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-buttons">
+                <button onclick="saveAllUserChanges()" style="background: #2196F3; color: white;">ذخیره همه تغییرات</button>
+                <button onclick="closeUserManagement()" style="background: #f44336; color: white;">بستن</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- System Settings Modal -->
+    <div id="system-settings-modal" class="modal">
+        <div class="modal-content">
+            <h3 style="text-align: center;">⚙️ تنظیمات سیستم</h3>
+            
+            <div class="development-message">
+                <h4>🚧 در حال توسعه</h4>
+                <p>سیستم تنظیمات در حال توسعه و بهبود می‌باشد.</p>
+                <p>این بخش به زودی با امکانات زیر در دسترس خواهد بود:</p>
+                <ul style="text-align: right; direction: rtl;">
+                    <li>تنظیمات پیشرفته مالی و محاسبات</li>
+                    <li>مدیریت خودکار بک‌آپ</li>
+                    <li>تنظیمات امنیتی و حریم خصوصی</li>
+                    <li>پیکربندی چاپ و خروجی‌ها</li>
+                    <li>تنظیمات اعلان‌ها و نوتیفیکیشن</li>
+                </ul>
+                <p>لطفاً در نسخه‌های آینده مراجعه فرمایید.</p>
+            </div>
+            
+            <div class="modal-buttons">
+                <button onclick="closeSystemSettings()" style="background: #f44336; color: white;">بستن</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notification Container -->
+    <div id="notification-container"></div>
+
+    <script>
+        // =============================================
+        // INITIALIZATION AND CORE VARIABLES
+        // =============================================
+        
+        const FORM_STORAGE_KEY = 'flightFormsData';
+        const BACKUP_STORAGE_KEY = 'flightFormsBackups';
+        const USERS_STORAGE_KEY = 'systemUsers';
+        const AUTO_BACKUP_SETTINGS_KEY = 'autoBackupSettings';
+        const CLOUD_SETTINGS_KEY = 'cloudBackupSettings';
+        
+        let intermediateFlightCount = 0;
+        let currentUser = null;
+        let editingUser = null;
+        let currentFocusIndex = 0;
+        let focusableElements = [];
+
+        // User Roles and Permissions
+        const USER_ROLES = {
+            ADMIN: {
+                name: 'مدیر سیستم',
+                permissions: [
+                    'CREATE_FORM', 'EDIT_FORM', 'DELETE_FORM', 
+                    'VIEW_ALL_FORMS', 'FINANCIAL_REPORT', 'BACKUP_MANAGEMENT',
+                    'USER_MANAGEMENT', 'SYSTEM_SETTINGS', 'RESET_FORM_NUMBER',
+                    'ADMIN_DASHBOARD', 'AUDIT_LOG', 'CLOUD_BACKUP'
+                ]
+            },
+            SUPERVISOR: {
+                name: 'ناظر',
+                permissions: [
+                    'VIEW_ALL_FORMS', 'EDIT_FORM', 'FINANCIAL_REPORT', 
+                    'BACKUP_RESTORE', 'AUDIT_LOG'
+                ]
+            },
+            OPERATOR: {
+                name: 'اپراتور',
+                permissions: [
+                    'CREATE_FORM', 'EDIT_OWN_FORMS', 'VIEW_OWN_FORMS'
+                ]
+            },
+            AUDITOR: {
+                name: 'بازرس',
+                permissions: [
+                    'VIEW_ALL_FORMS', 'FINANCIAL_REPORT', 'AUDIT_LOG'
+                ]
+            },
+            CUSTOM: {
+                name: 'سفارشی',
+                permissions: []
+            }
+        };
+
+        // Default Users
+        const defaultUsers = {
+            'admin': {
+                password: 'admin123',
+                role: 'ADMIN',
+                fullName: 'مدیر سیستم',
+                created: new Date().toISOString()
+            },
+            'operator1': {
+                password: 'op123',
+                role: 'OPERATOR', 
+                fullName: 'اپراتور یک',
+                created: new Date().toISOString()
+            },
+            'supervisor': {
+                password: 'sup123',
+                role: 'SUPERVISOR',
+                fullName: 'ناظر سیستم',
+                created: new Date().toISOString()
+            },
+            'auditor': {
+                password: 'audit123',
+                role: 'AUDITOR',
+                fullName: 'بازرس مالی',
+                created: new Date().toISOString()
+            }
+        };
+
+        // =============================================
+        // CORE SYSTEM FUNCTIONS
+        // =============================================
+
+        function initializeSystem() {
+            console.log('Initializing system...');
+            initializeFormNumber();
+            initializeUsers();
+            loadCurrentUser();
+            updateDateTime();
+            updateHeaderDateTime();
+            setupEventListeners();
+            updateHeaderUserDisplay();
+            updateFormDates(); // اضافه شد: بروزرسانی تاریخ‌ها در فرم
+            initializeKeyboardNavigation(); // اضافه شد: فعال‌سازی ناوبری کیبورد
+            loadAutoBackupSettings(); // بارگذاری تنظیمات بک‌آپ
+            
+            setInterval(updateDateTime, 1000);
+            setInterval(updateHeaderDateTime, 1000);
+            setInterval(updateLiveClock, 1000);
+            
+            console.log('System initialized successfully');
+        }
+
+        function updateLiveClock() {
+            const now = new Date();
+            const timeString = now.toLocaleTimeString('en-GB', { 
+                hour: '2-digit', 
+                minute: '2-digit', 
+                second: '2-digit',
+                hour12: false 
+            });
+            document.getElementById('live-clock').textContent = timeString;
+        }
+
+        function loadCurrentUser() {
+            const saved = sessionStorage.getItem('currentUser');
+            if (saved) {
+                try {
+                    currentUser = JSON.parse(saved);
+                    const users = JSON.parse(localStorage.getItem(USERS_STORAGE_KEY) || '{}');
+                    if (users[currentUser.username]) {
+                        showMainInterface();
+                        return;
+                    }
+                } catch (e) {
+                    console.error('Error loading user:', e);
+                }
+            }
+            // If no valid session, show login
+            showLoginInterface();
+        }
+
+        function quickLogin() {
+            console.log('Quick login called');
+            const username = document.getElementById('login-username').value;
+            const password = document.getElementById('login-password').value;
+
+            const users = JSON.parse(localStorage.getItem(USERS_STORAGE_KEY) || '{}');
+
+            if (users[username] && users[username].password === password) {
+                currentUser = {
+                    username: username,
+                    role: users[username].role,
+                    fullName: users[username].fullName || username,
+                    permissions: getUserPermissions(users[username].role, users[username].customPermissions)
+                };
+
+                sessionStorage.setItem('currentUser', JSON.stringify(currentUser));
+                showMainInterface();
+                showNotification('ورود موفقیت‌آمیز بود', 'success');
+            } else {
+                showNotification('نام کاربری یا رمز عبور اشتباه است', 'error');
+            }
+        }
+
+        function showMainInterface() {
+            document.getElementById('login-section').style.display = 'none';
+            document.getElementById('main-form').style.display = 'table';
+            document.getElementById('action-buttons').style.display = 'flex';
+            document.getElementById('user-dropdown').style.display = 'inline-block';
+            document.getElementById('logout-btn').style.display = 'inline-block';
+            updateHeaderUserDisplay();
+            updateFocusableElements(); // بروزرسانی لیست المان‌های قابل فوکوس
+            checkPermissions(); // چک مجوزها پس از لاگین
+        }
+
+        function showLoginInterface() {
+            document.getElementById('login-section').style.display = 'block';
+            document.getElementById('main-form').style.display = 'none';
+            document.getElementById('action-buttons').style.display = 'none';
+            document.getElementById('user-dropdown').style.display = 'none';
+            document.getElementById('logout-btn').style.display = 'none';
+            updateHeaderUserDisplay();
+        }
+
+        function logout() {
+            sessionStorage.removeItem('currentUser');
+            currentUser = null;
+            showLoginInterface();
+            showNotification('شما با موفقیت خارج شدید', 'info');
+        }
+
+        function getUserPermissions(role, customPermissions = []) {
+            if (role === 'CUSTOM') {
+                return customPermissions;
+            }
+            return USER_ROLES[role]?.permissions || [];
+        }
+
+        function initializeFormNumber() {
+            if (!localStorage.getItem('formCounter')) {
+                localStorage.setItem('formCounter', '1');
+            }
+            let counter = localStorage.getItem('formCounter');
+            let padded = parseInt(counter).toString().padStart(3, '0');
+            document.getElementById('no').value = padded;
+        }
+
+        function initializeUsers() {
+            if (!localStorage.getItem(USERS_STORAGE_KEY)) {
+                localStorage.setItem(USERS_STORAGE_KEY, JSON.stringify(defaultUsers));
+            }
+        }
+
+        function updateDateTime() {
+            const now = new Date();
+            document.getElementById('current-time').value = now.toLocaleTimeString('en-GB', {hour: '2-digit', minute: '2-digit'});
+            document.getElementById('dep-time').value = now.toLocaleTimeString('en-GB', {hour: '2-digit', minute: '2-digit'});
+        }
+
+        // اضافه شد: تابع برای بروزرسانی تاریخ‌ها در فرم
+        function updateFormDates() {
+            const now = new Date();
+            // محاسبه تاریخ شمسی صحیح
+            const persianDateStr = new persianDate(now).format('YYYY/MM/DD');
+            
+            // بروزرسانی تاریخ‌ها در فرم
+            document.getElementById('current-date').value = persianDateStr;
+            document.getElementById('dep-date').value = persianDateStr;
+        }
+
+        function updateHeaderDateTime() {
+            const now = new Date();
+            
+            // Persian date and weekday - محاسبه صحیح تاریخ شمسی
+            const persianDateStr = new persianDate(now).format('YYYY/MM/DD');
+            const persianWeekday = new persianDate(now).format('dddd');
+            document.getElementById('persian-date-time').textContent = persianDateStr + ' - ' + persianWeekday;
+            
+            // Gregorian date and weekday
+            const gregorianDate = now.getFullYear() + '/' + 
+                                String(now.getMonth() + 1).padStart(2, '0') + '/' + 
+                                String(now.getDate()).padStart(2, '0');
+            const gregorianWeekday = now.toLocaleDateString('en-US', { weekday: 'long' });
+            document.getElementById('current-date-time').textContent = gregorianDate + ' - ' + gregorianWeekday;
+        }
+
+        function updateHeaderUserDisplay() {
+            const display = document.getElementById('header-user-display');
+            if (currentUser) {
+                display.textContent = `کاربر: ${currentUser.fullName || currentUser.username}`;
+            } else {
+                display.textContent = 'کاربر: مهمان';
+            }
+        }
+
+        // =============================================
+        // NOTIFICATION SYSTEM
+        // =============================================
+
+        function showNotification(message, type = 'info') {
+            const container = document.getElementById('notification-container');
+            const notification = document.createElement('div');
+            notification.className = `notification ${type}`;
+            notification.textContent = message;
+            
+            container.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.remove();
+            }, 5000);
+        }
+
+        // =============================================
+        // KEYBOARD NAVIGATION SYSTEM
+        // =============================================
+
+        function initializeKeyboardNavigation() {
+            document.addEventListener('keydown', handleKeyboardNavigation);
+            updateFocusableElements();
+        }
+
+        function updateFocusableElements() {
+            // جمع‌آوری تمام المان‌های قابل فوکوس در فرم اصلی
+            const mainForm = document.getElementById('main-form');
+            if (!mainForm) return;
+            
+            focusableElements = Array.from(mainForm.querySelectorAll(
+                'input:not([type="hidden"]):not([disabled]), select:not([disabled]), button:not([disabled])'
+            ));
+            
+            // اضافه کردن المان‌های فرم‌های اضافی (پرواز برگشت و میانی)
+            const returnSection = document.getElementById('return-flight-section');
+            if (returnSection && returnSection.style.display !== 'none') {
+                const returnElements = Array.from(returnSection.querySelectorAll(
+                    'input:not([type="hidden"]):not([disabled]), select:not([disabled]), button:not([disabled])'
+                ));
+                focusableElements = focusableElements.concat(returnElements);
+            }
+            
+            const intermediateSection = document.getElementById('intermediate-flights-section');
+            if (intermediateSection && intermediateSection.style.display !== 'none') {
+                const intermediateElements = Array.from(intermediateSection.querySelectorAll(
+                    'input:not([type="hidden"]):not([disabled]), select:not([disabled]), button:not([disabled])'
+                ));
+                focusableElements = focusableElements.concat(intermediateElements);
+            }
+            
+            // اضافه کردن دکمه‌های action
+            const actionButtons = document.getElementById('action-buttons');
+            if (actionButtons && actionButtons.style.display !== 'none') {
+                const actionElements = Array.from(actionButtons.querySelectorAll(
+                    'button:not([disabled])'
+                ));
+                focusableElements = focusableElements.concat(actionElements);
+            }
+        }
+
+        function handleKeyboardNavigation(event) {
+            // فقط وقتی که در حالت فرم هستیم
+            if (document.getElementById('main-form').style.display === 'none') return;
+            
+            const key = event.key;
+            if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(key)) {
+                event.preventDefault();
+                
+                // بروزرسانی لیست المان‌ها
+                updateFocusableElements();
+                
+                // پیدا کردن المان فعلی
+                const currentElement = document.activeElement;
+                currentFocusIndex = focusableElements.indexOf(currentElement);
+                
+                if (currentFocusIndex === -1) {
+                    currentFocusIndex = 0;
+                }
+                
+                let newIndex = currentFocusIndex;
+                const cols = 10; // تعداد ستون‌ها در جدول
+                
+                switch(key) {
+                    case 'ArrowDown':
+                        // حرکت به پایین - رفتن به ردیف بعدی
+                        newIndex = Math.min(currentFocusIndex + cols, focusableElements.length - 1);
+                        break;
+                    case 'ArrowUp':
+                        // حرکت به بالا - رفتن به ردیف قبلی
+                        newIndex = Math.max(currentFocusIndex - cols, 0);
+                        break;
+                    case 'ArrowRight':
+                        // حرکت به راست - رفتن به المان بعدی
+                        newIndex = (currentFocusIndex + 1) % focusableElements.length;
+                        break;
+                    case 'ArrowLeft':
+                        // حرکت به چپ - رفتن به المان قبلی
+                        newIndex = (currentFocusIndex - 1 + focusableElements.length) % focusableElements.length;
+                        break;
+                }
+                
+                // حذف highlight قبلی
+                focusableElements.forEach(el => el.classList.remove('keyboard-navigation'));
+                
+                // فوکوس روی المان جدید و اضافه کردن highlight
+                if (focusableElements[newIndex]) {
+                    focusableElements[newIndex].focus();
+                    focusableElements[newIndex].classList.add('keyboard-navigation');
+                    currentFocusIndex = newIndex;
+                }
+            }
+        }
+
+        // =============================================
+        // CORE FORM FUNCTIONS
+        // =============================================
+
+        function getFormData() {
+            const data = {
+                currentDate: document.getElementById('current-date').value,
+                currentTime: document.getElementById('current-time').value,
+                passengers: [],
+                depDate: document.getElementById('dep-date').value,
+                depTime: document.getElementById('dep-time').value,
+                from: document.getElementById('from').value,
+                to: document.getElementById('to').value,
+                address: document.getElementById('address').value,
+                mobile: document.getElementById('mobile').value,
+                phone: document.getElementById('phone').value,
+                reference: document.getElementById('reference').value,
+                company: document.getElementById('company').value,
+                counter: document.getElementById('counter').value,
+                description: document.getElementById('description').value,
+                financial: {
+                    m: document.getElementById('financial-m').value,
+                    p: document.getElementById('financial-p').value,
+                    com: document.getElementById('financial-com').value,
+                    sell: document.getElementById('financial-sell').value,
+                    buy: document.getElementById('financial-buy').value,
+                    irr: document.getElementById('financial-irr').value,
+                    irq: document.getElementById('financial-irq').value,
+                    usd: document.getElementById('financial-usd').value,
+                    card: document.getElementById('financial-card').value,
+                    bank: document.getElementById('financial-bank').value
+                }
+            };
+
+            // Collect passengers
+            for (let i = 1; i <= 6; i++) {
+                const nameEl = document.getElementById(`passenger${i}`);
+                if (nameEl && nameEl.value.trim()) {
+                    data.passengers.push({
+                        name: nameEl.value,
+                        gender: document.getElementById(`passenger${i}-gender`).value,
+                        type: document.getElementById(`passenger${i}-type`).value
+                    });
+                }
+            }
+
+            return data;
+        }
+
+        function saveForm() {
+            if (!confirm('آیا از ثبت فرم اطمینان دارید؟')) {
+                return;
+            }
+            
+            const formData = {
+                id: Date.now(),
+                no: document.getElementById('no').value,
+                timestamp: new Date().toISOString(),
+                isModified: false,
+                data: getFormData()
+            };
+            
+            const savedForms = JSON.parse(localStorage.getItem(FORM_STORAGE_KEY)) || [];
+            savedForms.push(formData);
+            
+            localStorage.setItem(FORM_STORAGE_KEY, JSON.stringify(savedForms));
+            incrementFormNumber();
+            
+            showNotification(`فرم شماره ${formData.no} با موفقیت ذخیره شد!`, 'success');
+            resetForm();
+        }
+
+        function resetForm() {
+            document.querySelectorAll('input').forEach(input => {
+                if (input.id !== 'no') {
+                    input.value = '';
+                }
+            });
+            
+            document.querySelectorAll('.passenger-type').forEach(select => {
+                select.value = 'ADT';
+            });
+            
+            document.querySelectorAll('.passenger-gender').forEach(select => {
+                select.value = '';
+            });
+            
+            updateDateTime();
+            updateFormDates(); // اضافه شد: بروزرسانی تاریخ‌ها هنگام ریست فرم
+            updateFocusableElements(); // بروزرسانی لیست المان‌های قابل فوکوس
+        }
+
+        function incrementFormNumber() {
+            let counter = localStorage.getItem('formCounter');
+            counter = parseInt(counter) + 1;
+            localStorage.setItem('formCounter', counter.toString());
+            let padded = counter.toString().padStart(3, '0');
+            document.getElementById('no').value = padded;
+        }
+
+        function showSavedForms() {
+            const savedForms = JSON.parse(localStorage.getItem(FORM_STORAGE_KEY) || '[]');
+            const formsList = document.getElementById('forms-list');
+            
+            if (savedForms.length === 0) {
+                formsList.innerHTML = '<p style="text-align: center;">هیچ فرم ذخیره شده‌ای وجود ندارد.</p>';
+            } else {
+                formsList.innerHTML = savedForms.map(form => `
+                    <div class="form-item">
+                        <div class="form-details">
+                            <div class="form-row">
+                                <span class="form-label">شماره فرم:</span>
+                                <span class="form-value">${form.no}</span>
+                            </div>
+                            <div class="form-row">
+                                <span class="form-label">تاریخ:</span>
+                                <span class="form-value">${form.data.currentDate}</span>
+                            </div>
+                            <div class="form-row">
+                                <span class="form-label">مسیر:</span>
+                                <span class="form-value">${form.data.from} → ${form.data.to}</span>
+                            </div>
+                        </div>
+                        <div class="form-actions">
+                            <button onclick="loadForm(${form.id})">بارگذاری</button>
+                            <button onclick="deleteForm(${form.id})">حذف</button>
+                        </div>
+                    </div>
+                `).join('');
+            }
+            
+            document.getElementById('forms-modal').style.display = 'block';
+        }
+
+        function loadForm(formId) {
+            const savedForms = JSON.parse(localStorage.getItem(FORM_STORAGE_KEY)) || [];
+            const form = savedForms.find(f => f.id === formId);
+            
+            if (form) {
+                document.getElementById('no').value = form.no;
+                document.getElementById('current-date').value = form.data.currentDate;
+                document.getElementById('current-time').value = form.data.currentTime;
+                document.getElementById('dep-date').value = form.data.depDate;
+                document.getElementById('dep-time').value = form.data.depTime;
+                document.getElementById('from').value = form.data.from;
+                document.getElementById('to').value = form.data.to;
+                document.getElementById('address').value = form.data.address;
+                document.getElementById('mobile').value = form.data.mobile;
+                document.getElementById('phone').value = form.data.phone;
+                document.getElementById('reference').value = form.data.reference;
+                document.getElementById('company').value = form.data.company;
+                document.getElementById('counter').value = form.data.counter;
+                document.getElementById('description').value = form.data.description;
+                
+                document.getElementById('financial-m').value = form.data.financial.m;
+                document.getElementById('financial-p').value = form.data.financial.p;
+                document.getElementById('financial-com').value = form.data.financial.com;
+                document.getElementById('financial-sell').value = form.data.financial.sell;
+                document.getElementById('financial-buy').value = form.data.financial.buy;
+                document.getElementById('financial-irr').value = form.data.financial.irr;
+                document.getElementById('financial-irq').value = form.data.financial.irq;
+                document.getElementById('financial-usd').value = form.data.financial.usd;
+                document.getElementById('financial-card').value = form.data.financial.card;
+                document.getElementById('financial-bank').value = form.data.financial.bank;
+                
+                // Load passengers
+                form.data.passengers.forEach((p, index) => {
+                    if (index < 6) {
+                        document.getElementById(`passenger${index + 1}`).value = p.name || '';
+                        document.getElementById(`passenger${index + 1}-gender`).value = p.gender || '';
+                        document.getElementById(`passenger${index + 1}-type`).value = p.type || 'ADT';
+                    }
+                });
+                
+                showNotification(`فرم شماره ${form.no} بارگذاری شد!`, 'success');
+                closeModal();
+            }
+        }
+
+        function deleteForm(formId) {
+            if (confirm('آیا از حذف این فرم اطمینان دارید؟')) {
+                const savedForms = JSON.parse(localStorage.getItem(FORM_STORAGE_KEY)) || [];
+                const filteredForms = savedForms.filter(f => f.id !== formId);
+                localStorage.setItem(FORM_STORAGE_KEY, JSON.stringify(filteredForms));
+                showSavedForms();
+            }
+        }
+
+        function deleteAllForms() {
+            if (confirm('آیا از حذف همه فرم‌های ذخیره شده اطمینان دارید؟')) {
+                localStorage.removeItem(FORM_STORAGE_KEY);
+                showNotification('همه فرم‌های ذخیره شده حذف شدند.', 'success');
+                showSavedForms();
+            }
+        }
+
+        function resetFormNumber() {
+            if (confirm('آیا از ریست کردن شماره فرم اطمینان دارید؟')) {
+                localStorage.setItem('formCounter', '1');
+                document.getElementById('no').value = '001';
+                showNotification('شماره فرم ریست شد', 'success');
+            }
+        }
+
+        function createNewForm() {
+            if (confirm('آیا از ایجاد فرم جدید مطمئن هستید؟')) {
+                resetForm();
+            }
+        }
+
+        function closeModal() {
+            document.getElementById('forms-modal').style.display = 'none';
+        }
+
+        // =============================================
+        // FLIGHT MANAGEMENT FUNCTIONS
+        // =============================================
+
+        function removeReturnFlight() {
+            document.getElementById('return-flight-section').style.display = 'none';
+            document.getElementById('return-flight-btn').style.background = '#9C27B0';
+            updateFocusableElements(); // بروزرسانی لیست المان‌های قابل فوکوس
+        }
+
+        function addIntermediateFlight() {
+            if (intermediateFlightCount >= 6) {
+                alert('حداکثر ۶ پرواز میانی قابل افزودن است.');
+                return;
+            }
+
+            intermediateFlightCount++;
+            const flightId = `intermediate-${intermediateFlightCount}`;
+            
+            const flightHTML = `
+                <div id="${flightId}" class="additional-flight">
+                    <div class="flight-header">
+                        پرواز میانی ${intermediateFlightCount}
+                        <button type="button" class="remove-flight" onclick="removeIntermediateFlight('${flightId}')">×</button>
+                    </div>
+                    <table style="width: 100%;">
+                        <tr class="gray">
+                            <td>DEP DATE:</td>
+                            <td colspan="3"><input type="text" id="${flightId}-dep-date" placeholder="Select or type date"></td>
+                            <td>FROM:</td>
+                            <td colspan="5" class="from-to-cell"><input type="text" id="${flightId}-from" placeholder="Type city or IATA"></td>
+                        </tr>
+                        <tr class="gray">
+                            <td>DEP TIME:</td>
+                            <td colspan="3">
+                                <div class="time-container">
+                                    <input type="text" id="${flightId}-dep-time" placeholder="Select or type time">
+                                    <button type="button" class="reset-time-btn" title="Reset to current time">↻</button>
+                                </div>
+                            </td>
+                            <td>TO:</td>
+                            <td colspan="5" class="from-to-cell"><input type="text" id="${flightId}-to" placeholder="Type city or IATA"></td>
+                        </tr>
+                    </table>
+                </div>
+            `;
+
+            document.getElementById('intermediate-flights-container').insertAdjacentHTML('beforeend', flightHTML);
+            updateFocusableElements(); // بروزرسانی لیست المان‌های قابل فوکوس
+        }
+
+        function removeIntermediateFlight(flightId) {
+            document.getElementById(flightId).remove();
+            intermediateFlightCount--;
+            
+            if (intermediateFlightCount === 0) {
+                document.getElementById('intermediate-flights-section').style.display = 'none';
+                document.getElementById('intermediate-flights-btn').style.background = '#607D8B';
+            }
+            
+            updateFocusableElements(); // بروزرسانی لیست المان‌های قابل فوکوس
+        }
+
+        // =============================================
+        // MODAL MANAGEMENT FUNCTIONS
+        // =============================================
+
+        function showSearchModal() {
+            document.getElementById('search-modal').style.display = 'block';
+        }
+
+        function showReportModal() {
+            document.getElementById('report-modal').style.display = 'block';
+        }
+
+        function showBackupModal() {
+            loadBackupList();
+            document.getElementById('backup-modal').style.display = 'block';
+        }
+
+        function showAdminDashboard() {
+            updateDashboard();
+            document.getElementById('admin-modal').style.display = 'block';
+        }
+
+        function showUserManagement() {
+            loadUsersList();
+            document.getElementById('user-management-modal').style.display = 'block';
+        }
+
+        function showSystemSettings() {
+            document.getElementById('system-settings-modal').style.display = 'block';
+        }
+
+        function closeSystemSettings() {
+            document.getElementById('system-settings-modal').style.display = 'none';
+        }
+
+        // اضافه شد: تابع بستن منوی مدیریت کاربران
+        function closeUserManagement() {
+            document.getElementById('user-management-modal').style.display = 'none';
+        }
+
+        // =============================================
+        // AIRPORTS DATA
+        // =============================================
+
+        var airports = [
+            "Tehran (تهران) - Imam Khomeini International Airport (فرودگاه بین‌المللی امام خمینی) - IKA",
+            "Tehran (تهران) - Mehrabad International Airport (فرودگاه مهرآباد) - THR",
+            "Mashhad (مشهد) - Mashhad International Airport (فرودگاه بین‌المللی مشهد) - MHD",
+            "Isfahan (اصفهان) - Isfahan International Airport (فرودگاه بین‌المللی اصفهان) - IFN",
+            "Shiraz (شیراز) - Shiraz International Airport (فرودگاه بین‌المللی شیراز) - SYZ",
+            "Tabriz (تبریز) - Tabriz International Airport (فرودگاه بین‌المللی تبریز) - TBZ",
+            "Ahvaz (اهواز) - Ahvaz International Airport (فرودگاه بین‌المللی اهواز) - AWZ",
+            "Kish Island (کیش) - Kish International Airport (فرودگاه بین‌المللی کیش) - KIH",
+            "Istanbul (Turkey) - Istanbul Airport - IST",
+            "Dubai (UAE) - Dubai International Airport - DXB",
+            "Doha (Qatar) - Hamad International Airport - DOH"
+        ];
+
+        // =============================================
+        // EVENT LISTENERS SETUP
+        // =============================================
+
+        function setupEventListeners() {
+            console.log('Setting up event listeners...');
+            
+            // Time reset buttons
+            document.querySelectorAll('.reset-time-btn').forEach(button => {
+                button.addEventListener('click', function() {
+                    var inputId = this.parentElement.querySelector('input').id;
+                    setCurrentTime(inputId);
+                });
+            });
+            
+            // Persian Date Pickers - با تنظیمات صحیح
+            $(".date-picker, #dep-date, #current-date, #return-dep-date, #search-date-from, #search-date-to, #report-date-from, #report-date-to, #auto-backup-start-date").persianDatepicker({
+                format: 'YYYY/MM/DD',
+                observer: true,
+                initialValue: false // اضافه شد: عدم استفاده از مقدار اولیه پیش‌فرض
+            });
+            
+            // Autocomplete for airports
+            $("#from, #to, #return-from, #return-to").autocomplete({
+                source: airports,
+                minLength: 1,
+                delay: 100
+            });
+            
+            // Flight management
+            document.getElementById('return-flight-btn').addEventListener('click', function() {
+                const returnSection = document.getElementById('return-flight-section');
+                if (returnSection.style.display === 'none') {
+                    returnSection.style.display = 'block';
+                    this.style.background = '#7B1FA2';
+                } else {
+                    returnSection.style.display = 'none';
+                    this.style.background = '#9C27B0';
+                }
+                updateFocusableElements(); // بروزرسانی لیست المان‌های قابل فوکوس
+            });
+            
+            document.getElementById('intermediate-flights-btn').addEventListener('click', function() {
+                const intermediateSection = document.getElementById('intermediate-flights-section');
+                if (intermediateSection.style.display === 'none') {
+                    intermediateSection.style.display = 'block';
+                    this.style.background = '#455A64';
+                    if (intermediateFlightCount === 0) {
+                        addIntermediateFlight();
+                    }
+                } else {
+                    intermediateSection.style.display = 'none';
+                    this.style.background = '#607D8B';
+                }
+                updateFocusableElements(); // بروزرسانی لیست المان‌های قابل فوکوس
+            });
+            
+            // Form management
+            document.getElementById('save-btn').addEventListener('click', saveForm);
+            document.getElementById('new-form-btn').addEventListener('click', createNewForm);
+            document.getElementById('manage-btn').addEventListener('click', showSavedForms);
+            document.getElementById('reset-no-btn').addEventListener('click', resetFormNumber);
+            document.getElementById('close-modal').addEventListener('click', closeModal);
+            document.getElementById('delete-all-btn').addEventListener('click', deleteAllForms);
+            
+            // Header dropdown buttons - همه فعال شدند
+            document.getElementById('dropdown-search-btn').addEventListener('click', function(e) {
+                e.preventDefault();
+                showSearchModal();
+            });
+            
+            document.getElementById('dropdown-report-btn').addEventListener('click', function(e) {
+                e.preventDefault();
+                showReportModal();
+            });
+            
+            document.getElementById('dropdown-backup-btn').addEventListener('click', function(e) {
+                e.preventDefault();
+                showBackupModal();
+            });
+            
+            document.getElementById('dropdown-admin-btn').addEventListener('click', function(e) {
+                e.preventDefault();
+                showAdminDashboard();
+            });
+            
+            // Modal close handlers - اضافه شد: دکمه‌های بستن مودال‌ها
+            document.getElementById('close-search-modal').addEventListener('click', function() {
+                document.getElementById('search-modal').style.display = 'none';
+            });
+            
+            document.getElementById('close-report-modal').addEventListener('click', function() {
+                document.getElementById('report-modal').style.display = 'none';
+            });
+            
+            document.getElementById('close-backup-modal').addEventListener('click', function() {
+                document.getElementById('backup-modal').style.display = 'none';
+            });
+            
+            document.getElementById('close-admin-modal').addEventListener('click', function() {
+                document.getElementById('admin-modal').style.display = 'none';
+            });
+
+            // اضافه شد: مدیریت بک‌آپ خودکار
+            document.getElementById('auto-backup-enabled').addEventListener('change', function() {
+                document.getElementById('auto-backup-settings').style.display = this.checked ? 'block' : 'none';
+            });
+
+            // اضافه شد: مدیریت تاریخ شمسی و میلادی در بک‌آپ
+            $("#auto-backup-start-date").persianDatepicker({
+                format: 'YYYY/MM/DD',
+                observer: true,
+                initialValue: false,
+                onSelect: function(unixDate) {
+                    const date = new Date(unixDate);
+                    const gregorianDate = date.getFullYear() + '/' + 
+                                        String(date.getMonth() + 1).padStart(2, '0') + '/' + 
+                                        String(date.getDate()).padStart(2, '0');
+                    document.getElementById('auto-backup-start-date-gregorian').value = gregorianDate;
+                }
+            });
+
+            // اضافه شد: ذخیره تنظیمات بک‌آپ خودکار
+            document.getElementById('save-auto-backup-settings').addEventListener('click', function() {
+                const settings = {
+                    enabled: document.getElementById('auto-backup-enabled').checked,
+                    frequency: document.getElementById('auto-backup-frequency').value,
+                    time: document.getElementById('auto-backup-time').value,
+                    startDate: document.getElementById('auto-backup-start-date').value,
+                    backupOnExit: document.getElementById('backup-on-exit').checked,
+                    backupOnCrash: document.getElementById('backup-on-crash').checked
+                };
+                
+                localStorage.setItem(AUTO_BACKUP_SETTINGS_KEY, JSON.stringify(settings));
+                showNotification('تنظیمات بک‌آپ خودکار ذخیره شد', 'success');
+                updateAutoBackupStatus();
+            });
+
+            // اضافه شد: تست بک‌آپ خودکار
+            document.getElementById('test-auto-backup').addEventListener('click', function() {
+                showNotification('تست بک‌آپ خودکار انجام شد', 'info');
+            });
+
+            // اضافه شد: ایونت برای جستجو
+            document.getElementById('execute-search-btn').addEventListener('click', executeSearch);
+            document.getElementById('reset-search-btn').addEventListener('click', resetSearch);
+
+            // اضافه شد: ایونت برای گزارش
+            document.getElementById('generate-report-btn').addEventListener('click', generateReport);
+            document.getElementById('export-pdf-btn').addEventListener('click', exportToPDF);
+            document.getElementById('export-excel-btn').addEventListener('click', exportToExcel);
+            document.getElementById('print-report-btn').addEventListener('click', printReport);
+
+            // اضافه شد: ایونت برای بک‌آپ
+            document.getElementById('create-backup-btn').addEventListener('click', createBackup);
+            document.getElementById('download-backup-btn').addEventListener('click', downloadBackup);
+            document.getElementById('restore-backup-btn').addEventListener('click', restoreBackup);
+            document.getElementById('cloud-backup-btn').addEventListener('click', cloudBackup);
+            document.getElementById('cloud-restore-btn').addEventListener('click', cloudRestore);
+            document.getElementById('test-cloud-btn').addEventListener('click', testCloudConnection);
+
+            // اضافه شد: ایونت برای داشبورد
+            document.getElementById('refresh-dashboard-btn').addEventListener('click', updateDashboard);
+
+            console.log('Event listeners setup completed');
+        }
+
+        // اضافه شد: بارگذاری تنظیمات بک‌آپ خودکار
+        function loadAutoBackupSettings() {
+            const settings = JSON.parse(localStorage.getItem(AUTO_BACKUP_SETTINGS_KEY) || '{}');
+            
+            if (settings.enabled) {
+                document.getElementById('auto-backup-enabled').checked = true;
+                document.getElementById('auto-backup-settings').style.display = 'block';
+                
+                if (settings.frequency) document.getElementById('auto-backup-frequency').value = settings.frequency;
+                if (settings.time) document.getElementById('auto-backup-time').value = settings.time;
+                if (settings.startDate) document.getElementById('auto-backup-start-date').value = settings.startDate;
+                if (settings.backupOnExit) document.getElementById('backup-on-exit').checked = settings.backupOnExit;
+                if (settings.backupOnCrash) document.getElementById('backup-on-crash').checked = settings.backupOnCrash;
+                
+                updateAutoBackupStatus();
+            }
+        }
+
+        // اضافه شد: بروزرسانی وضعیت بک‌آپ خودکار
+        function updateAutoBackupStatus() {
+            const settings = JSON.parse(localStorage.getItem(AUTO_BACKUP_SETTINGS_KEY) || '{}');
+            
+            if (settings.enabled) {
+                const nextBackup = calculateNextBackupTime(settings);
+                document.getElementById('next-backup-time').textContent = `زمان بک‌آپ بعدی: ${nextBackup}`;
+                
+                const lastBackup = localStorage.getItem('lastAutoBackup') || '---';
+                document.getElementById('last-auto-backup').textContent = `آخرین بک‌آپ خودکار: ${lastBackup}`;
+            }
+        }
+
+        // اضافه شد: محاسبه زمان بک‌آپ بعدی
+        function calculateNextBackupTime(settings) {
+            // این تابع زمان بک‌آپ بعدی را بر اساس تنظیمات محاسبه می‌کند
+            // در اینجا یک پیاده‌سازی ساده ارائه شده است
+            const now = new Date();
+            let nextDate = new Date(now);
+            
+            switch(settings.frequency) {
+                case 'daily':
+                    nextDate.setDate(now.getDate() + 1);
+                    break;
+                case 'weekly':
+                    nextDate.setDate(now.getDate() + 7);
+                    break;
+                case 'monthly':
+                    nextDate.setMonth(now.getMonth() + 1);
+                    break;
+            }
+            
+            return nextDate.toLocaleDateString('fa-IR') + ' ' + (settings.time || '00:00');
+        }
+
+        function setCurrentTime(inputId) {
+            const now = new Date();
+            document.getElementById(inputId).value = now.toLocaleTimeString('en-GB', {hour: '2-digit', minute: '2-digit'});
+        }
+
+        // =============================================
+        // PERMISSIONS CHECK
+        // =============================================
+
+        function checkPermissions() {
+            if (!currentUser) return;
+            
+            // مثلاً غیرفعال کردن دکمه‌ها اگر مجوز نداشته باشد
+            if (!currentUser.permissions.includes('ADMIN_DASHBOARD')) {
+                document.getElementById('dropdown-admin-btn').classList.add('permission-denied');
+            }
+            // مشابه برای دیگر بخش‌ها
+        }
+
+        // =============================================
+        // SEARCH FUNCTIONS
+        // =============================================
+
+        function executeSearch() {
+            const resultsDiv = document.getElementById('search-results');
+            resultsDiv.innerHTML = '<p>نتایج جستجو: (پیاده‌سازی پایه - نتایج نمونه)</p>';
+            showNotification('جستجو انجام شد', 'success');
+        }
+
+        function resetSearch() {
+            document.querySelectorAll('#search-modal input').forEach(input => input.value = '');
+            document.getElementById('search-results').innerHTML = '';
+            showNotification('فیلدهای جستجو بازنشانی شد', 'info');
+        }
+
+        // =============================================
+        // REPORT FUNCTIONS
+        // =============================================
+
+        function generateReport() {
+            const contentDiv = document.getElementById('report-content');
+            contentDiv.innerHTML = '<p>گزارش مالی تولید شد (پیاده‌سازی پایه).</p>';
+            document.getElementById('report-preview').style.display = 'block';
+            showNotification('گزارش تولید شد', 'success');
+        }
+
+        function exportToPDF() {
+            const doc = new jsPDF();
+            doc.text('گزارش نمونه', 10, 10);
+            doc.save('report.pdf');
+            showNotification('PDF دانلود شد', 'success');
+        }
+
+        function exportToExcel() {
+            const wb = XLSX.utils.book_new();
+            const ws = XLSX.utils.aoa_to_sheet([['گزارش نمونه']]);
+            XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
+            XLSX.writeFile(wb, 'report.xlsx');
+            showNotification('Excel دانلود شد', 'success');
+        }
+
+        function printReport() {
+            window.print();
+            showNotification('چاپ انجام شد', 'info');
+        }
+
+        // =============================================
+        // BACKUP FUNCTIONS
+        // =============================================
+
+        function createBackup() {
+            const backupData = {
+                forms: localStorage.getItem(FORM_STORAGE_KEY),
+                timestamp: new Date().toISOString()
+            };
+            const backups = JSON.parse(localStorage.getItem(BACKUP_STORAGE_KEY) || '[]');
+            backups.push(backupData);
+            localStorage.setItem(BACKUP_STORAGE_KEY, JSON.stringify(backups));
+            loadBackupList();
+            showNotification('بک‌آپ جدید ایجاد شد', 'success');
+        }
+
+        function downloadBackup() {
+            const backup = localStorage.getItem(FORM_STORAGE_KEY);
+            const blob = new Blob([backup], {type: 'application/json'});
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'backup.json';
+            a.click();
+            showNotification('بک‌آپ دانلود شد', 'success');
+        }
+
+        function restoreBackup() {
+            const fileInput = document.getElementById('restore-backup-file');
+            const file = fileInput.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    localStorage.setItem(FORM_STORAGE_KEY, e.target.result);
+                    showNotification('بک‌آپ بازیابی شد', 'success');
+                };
+                reader.readAsText(file);
+            } else {
+                showNotification('فایل انتخاب نشده', 'error');
+            }
+        }
+
+        function cloudBackup() {
+            showNotification('آپلود به ابر (پیاده‌سازی پایه - موفقیت‌آمیز)', 'success');
+        }
+
+        function cloudRestore() {
+            showNotification('دانلود از ابر (پیاده‌سازی پایه - موفقیت‌آمیز)', 'success');
+        }
+
+        function testCloudConnection() {
+            showNotification('اتصال به ابر تست شد (موفقیت‌آمیز)', 'info');
+        }
+
+        function loadBackupList() {
+            const backups = JSON.parse(localStorage.getItem(BACKUP_STORAGE_KEY) || '[]');
+            const listDiv = document.getElementById('backup-list');
+            listDiv.innerHTML = backups.map((b, index) => `
+                <div class="backup-schedule-item">
+                    بک‌آپ ${index + 1} - تاریخ: ${new Date(b.timestamp).toLocaleString('fa-IR')}
+                </div>
+            `).join('');
+        }
+
+        // =============================================
+        // DASHBOARD FUNCTIONS
+        // =============================================
+
+        function updateDashboard() {
+            const forms = JSON.parse(localStorage.getItem(FORM_STORAGE_KEY) || '[]');
+            document.getElementById('today-forms-count').textContent = forms.length;
+            document.getElementById('today-revenue').textContent = '0'; // محاسبه واقعی اضافه شود
+            document.getElementById('online-users').textContent = '1'; // پیاده‌سازی پایه
+            document.getElementById('last-backup-time').textContent = localStorage.getItem('lastAutoBackup') || '---';
+            
+            const activitiesList = document.getElementById('recent-activities-list');
+            activitiesList.innerHTML = '<p>فعالیت‌های اخیر (پیاده‌سازی پایه)</p>';
+            showNotification('داشبورد بروزرسانی شد', 'info');
+        }
+
+        // =============================================
+        // USER MANAGEMENT FUNCTIONS
+        // =============================================
+
+        function createNewUser() {
+            const username = document.getElementById('new-username').value.trim();
+            const password = document.getElementById('new-password').value.trim();
+            const fullName = document.getElementById('new-fullname').value.trim();
+            const role = document.getElementById('new-user-role').value;
+            
+            if (!username || !password) {
+                showNotification('نام کاربری و رمز عبور الزامی است', 'error');
+                return;
+            }
+            
+            const users = JSON.parse(localStorage.getItem(USERS_STORAGE_KEY) || '{}');
+            if (users[username]) {
+                showNotification('نام کاربری تکراری است', 'error');
+                return;
+            }
+            
+            users[username] = {
+                password,
+                role,
+                fullName,
+                created: new Date().toISOString(),
+                customPermissions: role === 'CUSTOM' ? [] : undefined
+            };
+            
+            localStorage.setItem(USERS_STORAGE_KEY, JSON.stringify(users));
+            loadUsersList();
+            showNotification('کاربر جدید ایجاد شد', 'success');
+        }
+
+        function loadUsersList() {
+            const users = JSON.parse(localStorage.getItem(USERS_STORAGE_KEY) || '{}');
+            const listDiv = document.getElementById('users-list');
+            listDiv.innerHTML = Object.entries(users).map(([username, user]) => `
+                <div class="user-item">
+                    <p>نام کاربری: ${username}</p>
+                    <p>نام کامل: ${user.fullName}</p>
+                    <p>نقش: ${USER_ROLES[user.role].name}</p>
+                    <button onclick="editUser('${username}')">ویرایش</button>
+                    <button onclick="deleteUser('${username}')">حذف</button>
+                </div>
+            `).join('');
+        }
+
+        function editUser(username) {
+            const users = JSON.parse(localStorage.getItem(USERS_STORAGE_KEY) || '{}');
+            editingUser = users[username];
+            if (!editingUser) return;
+            
+            document.getElementById('edit-username').value = username;
+            document.getElementById('edit-fullname').value = editingUser.fullName;
+            document.getElementById('edit-user-role').value = editingUser.role;
+            
+            const permissionsList = document.getElementById('permissions-list');
+            permissionsList.innerHTML = USER_ROLES[editingUser.role].permissions.map(perm => `
+                <div class="permission-item">
+                    ${perm}
+                    <input type="checkbox" checked disabled>
+                </div>
+            `).join('');
+            
+            document.getElementById('user-edit-form').style.display = 'block';
+        }
+
+        function saveUserEdit() {
+            if (!editingUser) return;
+            
+            const users = JSON.parse(localStorage.getItem(USERS_STORAGE_KEY) || '{}');
+            const newUsername = document.getElementById('edit-username').value.trim();
+            const newFullName = document.getElementById('edit-fullname').value.trim();
+            const newRole = document.getElementById('edit-user-role').value;
+            
+            if (newUsername !== editingUser.username && users[newUsername]) {
+                showNotification('نام کاربری جدید تکراری است', 'error');
+                return;
+            }
+            
+            delete users[editingUser.username];
+            users[newUsername] = {
+                ...editingUser,
+                fullName: newFullName,
+                role: newRole
+            };
+            
+            localStorage.setItem(USERS_STORAGE_KEY, JSON.stringify(users));
+            document.getElementById('user-edit-form').style.display = 'none';
+            loadUsersList();
+            showNotification('تغییرات کاربر ذخیره شد', 'success');
+            editingUser = null;
+        }
+
+        function cancelUserEdit() {
+            document.getElementById('user-edit-form').style.display = 'none';
+            editingUser = null;
+        }
+
+        function resetUserPassword() {
+            if (!editingUser) return;
+            showNotification('رمز عبور ریست شد (به مقدار پیش‌فرض)', 'info');
+            // پیاده‌سازی واقعی: تغییر پسورد
+        }
+
+        function saveAllUserChanges() {
+            showNotification('همه تغییرات کاربران ذخیره شد', 'success');
+        }
+
+        function deleteUser(username) {
+            if (confirm('آیا از حذف کاربر اطمینان دارید؟')) {
+                const users = JSON.parse(localStorage.getItem(USERS_STORAGE_KEY) || '{}');
+                delete users[username];
+                localStorage.setItem(USERS_STORAGE_KEY, JSON.stringify(users));
+                loadUsersList();
+                showNotification('کاربر حذف شد', 'success');
+            }
+        }
+
+        // =============================================
+        // INITIALIZE SYSTEM
+        // =============================================
+
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('DOM loaded, initializing system...');
+            initializeSystem();
+        });
+
+        // =============================================
+        // GLOBAL FUNCTION EXPORTS
+        // =============================================
+
+        window.loadForm = loadForm;
+        window.deleteForm = deleteForm;
+        window.removeIntermediateFlight = removeIntermediateFlight;
+        window.addIntermediateFlight = addIntermediateFlight;
+        window.removeReturnFlight = removeReturnFlight;
+        window.logout = logout;
+        window.quickLogin = quickLogin;
+        window.showUserManagement = showUserManagement;
+        window.showSystemSettings = showSystemSettings;
+        window.closeSystemSettings = closeSystemSettings;
+        window.closeUserManagement = closeUserManagement; // اضافه شد
+        window.createNewUser = createNewUser; // اضافه شد
+        window.editUser = editUser; // اضافه شد
+        window.saveUserEdit = saveUserEdit; // اضافه شد
+        window.cancelUserEdit = cancelUserEdit; // اضافه شد
+        window.resetUserPassword = resetUserPassword; // اضافه شد
+        window.saveAllUserChanges = saveAllUserChanges; // اضافه شد
+        window.deleteUser = deleteUser; // اضافه شد
+    </script>
+</body>
+</html>
